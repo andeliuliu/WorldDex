@@ -2,14 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSCameraUsageDescription</key>
-    <string>AR Camera</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Export AR Media</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Export AR Media</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Audiovisual Recording</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Export AR Media</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Export AR Media</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Audiovisual Recording</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -17,15 +17,15 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-<dict/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition to enable voice commands and text-to-speech functionality.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses your location to share where you captured an item.</string>
+</dict>
 </plist>

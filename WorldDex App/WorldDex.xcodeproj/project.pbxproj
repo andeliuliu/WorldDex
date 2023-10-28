@@ -12,7 +12,24 @@
 		BB0313BD2AEC7DBA005D3715 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313BC2AEC7DBA005D3715 /* ContentView.swift */; };
 		BB0313BF2AEC7DBC005D3715 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0313BE2AEC7DBC005D3715 /* Assets.xcassets */; };
 		BB0313C22AEC7DBC005D3715 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0313C12AEC7DBC005D3715 /* Preview Assets.xcassets */; };
-		BB0313C92AEC8D0D005D3715 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB0313C82AEC8D0D005D3715 /* Info.plist */; };
+		BB0313CE2AEC9AA7005D3715 /* CameraInterfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313CD2AEC9AA7005D3715 /* CameraInterfaceView.swift */; };
+		BB0313D02AEC9E34005D3715 /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313CF2AEC9E34005D3715 /* Pokemon.swift */; };
+		BB0313D22AEC9ECE005D3715 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313D12AEC9ECE005D3715 /* Data.swift */; };
+		BB0313D42AEC9EEC005D3715 /* PokedexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313D32AEC9EEC005D3715 /* PokedexView.swift */; };
+		BB0313D62AEC9F0D005D3715 /* PokemonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313D52AEC9F0D005D3715 /* PokemonDetailView.swift */; };
+		BB0313D82AECA374005D3715 /* PokemonPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313D72AECA374005D3715 /* PokemonPostView.swift */; };
+		BB0313DA2AECA393005D3715 /* SocialPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313D92AECA393005D3715 /* SocialPageView.swift */; };
+		BB0313E42AECCED5005D3715 /* CameraActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313E02AECCED5005D3715 /* CameraActions.swift */; };
+		BB0313E52AECCED5005D3715 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313E12AECCED5005D3715 /* CameraView.swift */; };
+		BB0313E62AECCED5005D3715 /* CameraViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313E22AECCED5005D3715 /* CameraViewControllerDelegate.swift */; };
+		BB0313E72AECCED5005D3715 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313E32AECCED5005D3715 /* CameraViewController.swift */; };
+		BB0313E92AECCEEC005D3715 /* UserEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313E82AECCEEC005D3715 /* UserEvents.swift */; };
+		BB0313EB2AECDB33005D3715 /* MicProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313EA2AECDB33005D3715 /* MicProgressBar.swift */; };
+		BB0313F52AECF6DF005D3715 /* SwiftyGif in Frameworks */ = {isa = PBXBuildFile; productRef = BB0313F42AECF6DF005D3715 /* SwiftyGif */; };
+		BB0313F72AECF6FB005D3715 /* diceroll.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB0313F62AECF6FB005D3715 /* diceroll.gif */; };
+		BB0313F92AECFA82005D3715 /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313F82AECFA82005D3715 /* SuccessView.swift */; };
+		BB0313FD2AED0BCF005D3715 /* FailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313FC2AED0BCF005D3715 /* FailView.swift */; };
+		BB0313FF2AED0BF7005D3715 /* UITextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313FE2AED0BF7005D3715 /* UITextViewWrapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +40,24 @@
 		BB0313BC2AEC7DBA005D3715 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0313BE2AEC7DBC005D3715 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB0313C12AEC7DBC005D3715 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		BB0313C82AEC8D0D005D3715 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB0313CD2AEC9AA7005D3715 /* CameraInterfaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInterfaceView.swift; sourceTree = "<group>"; };
+		BB0313CF2AEC9E34005D3715 /* Pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
+		BB0313D12AEC9ECE005D3715 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		BB0313D32AEC9EEC005D3715 /* PokedexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokedexView.swift; sourceTree = "<group>"; };
+		BB0313D52AEC9F0D005D3715 /* PokemonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailView.swift; sourceTree = "<group>"; };
+		BB0313D72AECA374005D3715 /* PokemonPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonPostView.swift; sourceTree = "<group>"; };
+		BB0313D92AECA393005D3715 /* SocialPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialPageView.swift; sourceTree = "<group>"; };
+		BB0313DF2AECC8FB005D3715 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BB0313E02AECCED5005D3715 /* CameraActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraActions.swift; sourceTree = "<group>"; };
+		BB0313E12AECCED5005D3715 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		BB0313E22AECCED5005D3715 /* CameraViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewControllerDelegate.swift; sourceTree = "<group>"; };
+		BB0313E32AECCED5005D3715 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		BB0313E82AECCEEC005D3715 /* UserEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEvents.swift; sourceTree = "<group>"; };
+		BB0313EA2AECDB33005D3715 /* MicProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicProgressBar.swift; sourceTree = "<group>"; };
+		BB0313F62AECF6FB005D3715 /* diceroll.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = diceroll.gif; sourceTree = "<group>"; };
+		BB0313F82AECFA82005D3715 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
+		BB0313FC2AED0BCF005D3715 /* FailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FailView.swift; path = "/Users/anthonyqin/Desktop/Calhacks 2023/WorldDex/WorldDex App/WorldDex/FailView.swift"; sourceTree = "<absolute>"; };
+		BB0313FE2AED0BF7005D3715 /* UITextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewWrapper.swift; sourceTree = "<group>"; };
 		BE30E6C447A9CBE6FB932940 /* Pods-WorldDex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorldDex.debug.xcconfig"; path = "Target Support Files/Pods-WorldDex/Pods-WorldDex.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -33,6 +67,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48EE501E83FB1001C988C72B /* Pods_WorldDex.framework in Frameworks */,
+				BB0313F52AECF6DF005D3715 /* SwiftyGif in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,9 +104,26 @@
 		BB0313B92AEC7DBA005D3715 /* WorldDex */ = {
 			isa = PBXGroup;
 			children = (
-				BB0313C82AEC8D0D005D3715 /* Info.plist */,
+				BB0313DF2AECC8FB005D3715 /* Info.plist */,
+				BB0313F82AECFA82005D3715 /* SuccessView.swift */,
+				BB0313FE2AED0BF7005D3715 /* UITextViewWrapper.swift */,
+				BB0313FC2AED0BCF005D3715 /* FailView.swift */,
+				BB0313E82AECCEEC005D3715 /* UserEvents.swift */,
+				BB0313E02AECCED5005D3715 /* CameraActions.swift */,
+				BB0313E12AECCED5005D3715 /* CameraView.swift */,
+				BB0313E32AECCED5005D3715 /* CameraViewController.swift */,
+				BB0313E22AECCED5005D3715 /* CameraViewControllerDelegate.swift */,
 				BB0313BA2AEC7DBA005D3715 /* WorldDexApp.swift */,
 				BB0313BC2AEC7DBA005D3715 /* ContentView.swift */,
+				BB0313EA2AECDB33005D3715 /* MicProgressBar.swift */,
+				BB0313CF2AEC9E34005D3715 /* Pokemon.swift */,
+				BB0313D72AECA374005D3715 /* PokemonPostView.swift */,
+				BB0313D92AECA393005D3715 /* SocialPageView.swift */,
+				BB0313D32AEC9EEC005D3715 /* PokedexView.swift */,
+				BB0313D52AEC9F0D005D3715 /* PokemonDetailView.swift */,
+				BB0313D12AEC9ECE005D3715 /* Data.swift */,
+				BB0313CD2AEC9AA7005D3715 /* CameraInterfaceView.swift */,
+				BB0313F62AECF6FB005D3715 /* diceroll.gif */,
 				BB0313BE2AEC7DBC005D3715 /* Assets.xcassets */,
 				BB0313C02AEC7DBC005D3715 /* Preview Content */,
 			);
@@ -105,13 +157,15 @@
 				BB0313B32AEC7DBA005D3715 /* Sources */,
 				BB0313B42AEC7DBA005D3715 /* Frameworks */,
 				BB0313B52AEC7DBA005D3715 /* Resources */,
-				9C3230F561BEB86C06002CCB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = WorldDex;
+			packageProductDependencies = (
+				BB0313F42AECF6DF005D3715 /* SwiftyGif */,
+			);
 			productName = WorldDex;
 			productReference = BB0313B72AEC7DBA005D3715 /* WorldDex.app */;
 			productType = "com.apple.product-type.application";
@@ -140,6 +194,9 @@
 				Base,
 			);
 			mainGroup = BB0313AE2AEC7DBA005D3715;
+			packageReferences = (
+				BB0313F32AECF6DF005D3715 /* XCRemoteSwiftPackageReference "SwiftyGif" */,
+			);
 			productRefGroup = BB0313B82AEC7DBA005D3715 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -154,7 +211,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB0313C92AEC8D0D005D3715 /* Info.plist in Resources */,
+				BB0313F72AECF6FB005D3715 /* diceroll.gif in Resources */,
 				BB0313C22AEC7DBC005D3715 /* Preview Assets.xcassets in Resources */,
 				BB0313BF2AEC7DBC005D3715 /* Assets.xcassets in Resources */,
 			);
@@ -163,23 +220,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		9C3230F561BEB86C06002CCB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WorldDex/Pods-WorldDex-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WorldDex/Pods-WorldDex-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WorldDex/Pods-WorldDex-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E6CD95CD7435DE829B647F49 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -209,8 +249,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB0313F92AECFA82005D3715 /* SuccessView.swift in Sources */,
+				BB0313CE2AEC9AA7005D3715 /* CameraInterfaceView.swift in Sources */,
+				BB0313D22AEC9ECE005D3715 /* Data.swift in Sources */,
+				BB0313EB2AECDB33005D3715 /* MicProgressBar.swift in Sources */,
+				BB0313DA2AECA393005D3715 /* SocialPageView.swift in Sources */,
+				BB0313D82AECA374005D3715 /* PokemonPostView.swift in Sources */,
+				BB0313E72AECCED5005D3715 /* CameraViewController.swift in Sources */,
+				BB0313D02AEC9E34005D3715 /* Pokemon.swift in Sources */,
+				BB0313D42AEC9EEC005D3715 /* PokedexView.swift in Sources */,
+				BB0313E42AECCED5005D3715 /* CameraActions.swift in Sources */,
+				BB0313E52AECCED5005D3715 /* CameraView.swift in Sources */,
+				BB0313E92AECCEEC005D3715 /* UserEvents.swift in Sources */,
+				BB0313E62AECCED5005D3715 /* CameraViewControllerDelegate.swift in Sources */,
 				BB0313BD2AEC7DBA005D3715 /* ContentView.swift in Sources */,
+				BB0313D62AEC9F0D005D3715 /* PokemonDetailView.swift in Sources */,
+				BB0313FD2AED0BCF005D3715 /* FailView.swift in Sources */,
 				BB0313BB2AEC7DBA005D3715 /* WorldDexApp.swift in Sources */,
+				BB0313FF2AED0BF7005D3715 /* UITextViewWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,11 +404,13 @@
 				DEVELOPMENT_TEAM = 69G7HE4MM9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WorldDex/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -378,11 +436,13 @@
 				DEVELOPMENT_TEAM = 69G7HE4MM9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WorldDex/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -418,6 +478,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BB0313F32AECF6DF005D3715 /* XCRemoteSwiftPackageReference "SwiftyGif" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kirualex/SwiftyGif.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.4.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BB0313F42AECF6DF005D3715 /* SwiftyGif */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB0313F32AECF6DF005D3715 /* XCRemoteSwiftPackageReference "SwiftyGif" */;
+			productName = SwiftyGif;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BB0313AF2AEC7DBA005D3715 /* Project object */;
 }
