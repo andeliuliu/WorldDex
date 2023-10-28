@@ -253,11 +253,13 @@ app.post("/catch", async (req, res) => {
     let { image_id } = req.body;
     const {
       userId,
+      details,
       locationTaken,
-      userAddress,
       imageBase64,
       croppedImageBase64,
     } = req.body;
+
+    const userAddress = "0xCcF3DAe5328BFfD77854f4f2Cdd12072033607cA"
 
     let { image, croppedImage } = req.files ?? {};
     let imageBuffer, croppedImageBuffer;
@@ -314,7 +316,7 @@ app.post("/catch", async (req, res) => {
     );
 
     const result = await db.query(
-      "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
       [
         image_id,
         userId,
@@ -323,6 +325,7 @@ app.post("/catch", async (req, res) => {
         locationTaken,
         imageBuffer,
         croppedImageBuffer,
+        details
       ]
     );
 
@@ -337,6 +340,7 @@ app.post("/catch", async (req, res) => {
         dateAdded,
         locationTaken,
         userAddress,
+        details
       },
     };
 
