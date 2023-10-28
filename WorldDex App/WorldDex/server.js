@@ -15,20 +15,35 @@ const Web3 = require("web3");
 const fs = require("fs");
 const app = express();
 const path = require("path");
-const fileUpload = require('express-fileupload');
-const { Web3Storage, File } = require('web3.storage');
-const { AccountId, PrivateKey, Client, TokenCreateTransaction, TokenType, TokenSupplyType, TokenMintTransaction, TransferTransaction } = require("@hashgraph/sdk");
+const crypto = require("crypto");
+const axios = require("axios");
+const fileUpload = require("express-fileupload");
+const { Web3Storage, File } = require("web3.storage");
+const {
+  AccountId,
+  PrivateKey,
+  Client,
+  TokenCreateTransaction,
+  TokenType,
+  TokenSupplyType,
+  TokenMintTransaction,
+  TransferTransaction,
+} = require("@hashgraph/sdk");
 
 const web3StorageAPIKey = process.env.web3StorageAPIKey;
 const operatorAccountId = AccountId.fromString(process.env.operatorAccountId);
-const operatorPrivateKey = PrivateKey.fromString(process.env.operatorPrivateKey);
+const operatorPrivateKey = PrivateKey.fromString(
+  process.env.operatorPrivateKey
+);
 const supplyKey = PrivateKey.fromString(process.env.supplyKey);
 const tokenId = process.tokenId;
 const recipientAccountId = AccountId.fromString(process.env.recipientAccountId);
-const recipientPrivateKey = PrivateKey.fromString(process.env.recipientPrivateKey);
+const recipientPrivateKey = PrivateKey.fromString(
+  process.env.recipientPrivateKey
+);
 
 app.use(bodyParser.json());
-app.use(fileUpload({useTempFiles: true}));
+app.use(fileUpload({ useTempFiles: true }));
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
@@ -57,17 +72,20 @@ web3.eth.defaultAccount = account.address;
 
 const handleWeb3StorageUpload = async (req) => {
   const { username } = req.body;
-  const label = req.body['image_id'];
+  const label = req.body["image_id"];
   const { image } = req?.files ?? {};
   console.log(`Uploading image: [${label}] to ipfs.`);
   console.log(`Image: ${image}`);
-  if (!image && !label || label === undefined) {
-    return res.status(200).send({ message: 'invalid input' });
+  if ((!image && !label) || label === undefined) {
+    return res.status(200).send({ message: "invalid input" });
   }
-  const imageName = `${new Date().getTime()}_${image.name.replaceAll(' ', '')}`;
+  const imageName = `${new Date().getTime()}_${image.name.replaceAll(" ", "")}`;
   const file = await fileFromPath(image, imageName);
   const imageCid = await storeFiles(file);
-  const files = await makeFileObjects(label, `https://${imageCid}.ipfs.w3s.link/${imageName}`);
+  const files = await makeFileObjects(
+    label,
+    `https://${imageCid}.ipfs.w3s.link/${imageName}`
+  );
   const metaDataCid = await storeFiles(files);
   await fs.promises.unlink(image.tempFilePath);
   const metadataUrl = `https://${metaDataCid}.ipfs.w3s.link/metadata.json`;
@@ -79,11 +97,11 @@ const handleWeb3StorageUpload = async (req) => {
     label,
     ipfsUrl: metadataUrl,
     tokenId: newTokenId.newTokenId,
-    serialNumber: newTokenId.serialNumber
+    serialNumber: newTokenId.serialNumber,
   };
   return {
     success: true,
-    ipfsTierInfo: ipfsTierInfo, 
+    ipfsTierInfo: ipfsTierInfo,
   };
 };
 
@@ -106,11 +124,11 @@ LOOK HERE FOR USEFUL ENDPOINTS
 // THE FOLLOWING TWO ENDPOINTS PERFORM IN-MEMORY TEMPORARY STORAGE FOR A PHOTO AND RETRIEVAL
 let photoStorage = {};
 
-app.post('/takePhoto', (req, res) => {
+app.post("/takePhoto", (req, res) => {
   const { location, time, user, photo } = req.body;
 
   if (!photo) {
-    return res.status(400).send('Missing photo');
+    return res.status(400).send("Missing photo");
   }
 
   // Store photo information and metadata
@@ -121,35 +139,12 @@ app.post('/takePhoto', (req, res) => {
     photo,
   };
 
-  res.send('Photo taken successfully!');
+  res.send("Photo taken successfully!");
 });
 
-
-// RETRIEVE THE PHOTO
-app.get('/retrievePhoto', (res) => {
-  if (!photoStorage.path) {
-    return res.status(404).send('No photo available');
-  }
-
-  // Read the image file
-  const image = fs.readFileSync(photoStorage.path);
-
-  // Clear the temporary storage
-  fs.unlinkSync(photoStorage.path);
-
-  // Send the photo and its metadata
-  res.json({
-    location: photoStorage.location,
-    time: photoStorage.time,
-    user: photoStorage.user,
-    photo: image.toString('base64'),
-    mimetype: photoStorage.mimetype,
-  });
-});
-
-app.get('/retrievePhoto', (req, res) => {
+app.get("/retrievePhoto", (req, res) => {
   if (!photoStorage.photo) {
-    return res.status(404).send('No photo available');
+    return res.status(404).send("No photo available");
   }
 
   // Send the photo and its metadata
@@ -160,8 +155,6 @@ app.get('/retrievePhoto', (req, res) => {
     photo: photoStorage.photo,
   });
 });
-
-
 
 // THIS WRITES ALL IMAGES TO A TEMPORARY FOLDER FOR A GIVEN USER FOR ACCESS BY FRONT-END
 // EXAMPLE USAGE: http://localhost:3000/images?userId=4
@@ -187,7 +180,7 @@ app.get("/images", async (req, res) => {
     }
 
     const result = await db.query(
-      "SELECT image_data, image_id FROM images WHERE user_id = $1",
+      "SELECT image_id, blockchain_url, date_added, location_taken, cropped_image, image_data FROM images WHERE user_id = $1",
       [userId]
     );
 
@@ -199,15 +192,15 @@ app.get("/images", async (req, res) => {
     const imagePaths = [];
 
     result.rows.forEach((row, index) => {
-      const imageId = row.image_id || `image_${index}`;
-      const imagePath = path.join(userDir, `${imageId}.jpg`);
-      fs.writeFileSync(imagePath, row.image_data);
-    
-      // Convert image data to base64 encoded string
-      const imageDataBase64 = row.image_data.toString('base64');
-    
-      // Push both file path and image data to the array
-      imagePaths.push({ label: row.image_id, base64: imageDataBase64 });
+      imagePaths.push({
+        "image_id": row.image_id,
+        "user_id": userId,
+        "blockchain_url": row.blockchain_url,
+        "date_added": row.date_added,
+        "location_taken": row.location_taken,
+        "cropped_image": row.cropped_image,
+        "image": row.image_data,
+      });
     });
 
     res.json({ imagePaths });
@@ -232,7 +225,7 @@ app.get("/users", async (req, res) => {
 app.post("/users", async (req, res) => {
   const { user_id, username, email } = req.body;
 
-  if (!user_id || !username || !email) {
+  if (!username || !email) {
     return res.status(400).send("Missing parameters.");
   }
 
@@ -255,65 +248,70 @@ app.post("/users", async (req, res) => {
 - ADDS TO CENTRALIZED COCKROACHDB STORAGE FOR EASIER USE FROM OUR FRONT-END
 */
 let catchStorage = {};
-app.post('/catch', async (req, res) => {
+app.post("/catch", async (req, res) => {
   try {
+    let { image_id } = req.body;
     const {
-      image_id,
       userId,
       locationTaken,
       userAddress,
       imageBase64,
-      croppedImageBase64
+      croppedImageBase64,
     } = req.body;
 
     let { image, croppedImage } = req.files ?? {};
     let imageBuffer, croppedImageBuffer;
 
     if (!image && imageBase64) {
-      imageBuffer = Buffer.from(imageBase64, 'base64');
-      croppedImageBuffer = Buffer.from(croppedImageBase64, 'base64');
-      
-      const tempDir = path.join(__dirname, 'temp');
+      imageBuffer = Buffer.from(imageBase64, "base64");
+      croppedImageBuffer = Buffer.from(croppedImageBase64, "base64");
+
+      const tempDir = path.join(__dirname, "temp");
       if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir, { recursive: true });
       }
-    
-      const imagePath = path.join(tempDir, 'uploaded_image.jpg');
-      const croppedImagePath = path.join(tempDir, 'uploaded_cropped_image.jpg');
-      
+
+      const imagePath = path.join(tempDir, "uploaded_image.jpg");
+      const croppedImagePath = path.join(tempDir, "uploaded_cropped_image.jpg");
+
       fs.writeFileSync(imagePath, imageBuffer);
       fs.writeFileSync(croppedImagePath, croppedImageBuffer);
-    
+
       image = {
         data: imageBuffer,
-        name: 'uploaded_image.jpg',
-        mimetype: 'image/jpeg', // Adjust mimetype accordingly
-        tempFilePath: imagePath
+        name: "uploaded_image.jpg",
+        mimetype: "image/jpeg", // Adjust mimetype accordingly
+        tempFilePath: imagePath,
       };
-    
+
       croppedImage = {
         data: croppedImageBuffer,
-        name: 'uploaded_cropped_image.jpg',
-        mimetype: 'image/jpeg', // Adjust mimetype accordingly
-        tempFilePath: croppedImagePath
+        name: "uploaded_cropped_image.jpg",
+        mimetype: "image/jpeg", // Adjust mimetype accordingly
+        tempFilePath: croppedImagePath,
       };
-    
+
       req.files = {
         image,
-        croppedImage
+        croppedImage,
       };
     }
-    
 
     if (!croppedImage || !image) {
-      return res.status(400).send('Missing croppedImage or image');
+      return res.status(400).send("Missing croppedImage or image");
     }
 
-    const pokemon = image_id;
+    image_id = appendHashToIdentifier(image_id);
     const dateAdded = new Date().toISOString();
 
-    const imageUploadResponse = await catchPokemonAndMintNft(userAddress, pokemon, req);
-    const blockchainUrl = imageUploadResponse.ipfsTierInfo.ipfsUrl;
+    const imageUploadResponse = await catchPokemonAndMintNft(
+      userAddress,
+      image_id,
+      req
+    );
+    const blockchainUrl = await fetchImageUrl(
+      imageUploadResponse.ipfsTierInfo.ipfsUrl
+    );
 
     const result = await db.query(
       "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
@@ -324,7 +322,7 @@ app.post('/catch', async (req, res) => {
         dateAdded,
         locationTaken,
         imageBuffer,
-        croppedImageBuffer
+        croppedImageBuffer,
       ]
     );
 
@@ -339,7 +337,7 @@ app.post('/catch', async (req, res) => {
         dateAdded,
         locationTaken,
         userAddress,
-      }
+      },
     };
 
     res.send(`Image saved with ID: ${result.rows[0].image_id}`);
@@ -349,22 +347,25 @@ app.post('/catch', async (req, res) => {
   }
 });
 
-app.get('/retrieveCatchAll', (req, res) => {
-  if (!catchStorage.image || !catchStorage.croppedImage || !catchStorage.metadata) {
-    return res.status(404).send('No catch data available');
+app.get("/retrieveCatchAll", (req, res) => {
+  if (
+    !catchStorage.image ||
+    !catchStorage.croppedImage ||
+    !catchStorage.metadata
+  ) {
+    return res.status(404).send("No catch data available");
   }
 
   res.json({
-    image: catchStorage.image.toString('base64'),
-    croppedImage: catchStorage.croppedImage.toString('base64'),
-    metadata: catchStorage.metadata
+    image: catchStorage.image.toString("base64"),
+    croppedImage: catchStorage.croppedImage.toString("base64"),
+    metadata: catchStorage.metadata,
   });
 });
 
-
-app.get('/retrieveCatchMetadata', (req, res) => {
+app.get("/retrieveCatchMetadata", (req, res) => {
   if (!catchStorage.metadata) {
-    return res.status(404).send('No catch metadata available');
+    return res.status(404).send("No catch metadata available");
   }
 
   res.json(catchStorage.metadata);
@@ -463,8 +464,8 @@ app.get("/getAllTrades", async (req, res) => {
 });
 
 app.post("/catchPokemon", async (req, res) => {
-  const userAddress = req.body['userAddress'];
-  const pokemon = req.body['pokemon'];
+  const userAddress = req.body["userAddress"];
+  const pokemon = req.body["pokemon"];
   console.log(userAddress);
   console.log(pokemon);
 
@@ -491,12 +492,10 @@ app.post("/catchPokemon", async (req, res) => {
 
     // Check if the error message contains the "Pokemon already in user's collection" string
     if (error.message.includes("Pokemon already in user's collection")) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "You have already caught this Pokémon!",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "You have already caught this Pokémon!",
+      });
     }
 
     // Handle other errors
@@ -662,15 +661,14 @@ app.post("/confirmTrade", async (req, res) => {
   }
 });
 
-
 app.post("/catchPokemonAndMintNft", async (req, res) => {
-  const userAddress = req.body['userAddress'];
-  const pokemon = req.body['image_id'];
+  const userAddress = req.body["userAddress"];
+  const pokemon = req.body["image_id"];
 
   try {
     // Step 1: Catch the Pokemon
     await catchPokemon(userAddress, pokemon);
-    
+
     // Step 2: Mint the NFT
     const imageUploadResponse = await handleWeb3StorageUpload(req);
 
@@ -691,12 +689,10 @@ app.post("/catchPokemonAndMintNft", async (req, res) => {
   }
 });
 
-
-
 async function catchPokemonAndMintNft(userAddress, pokemon, req) {
   // Step 1: Catch the Pokemon
   await catchPokemon(userAddress, pokemon);
-  
+
   // Step 2: Mint the NFT
   const imageUploadResponse = await handleWeb3StorageUpload(req);
 
@@ -705,7 +701,7 @@ async function catchPokemonAndMintNft(userAddress, pokemon, req) {
 }
 
 async function makeStorageClient() {
-  const { default: fetch } = await import('node-fetch');
+  const { default: fetch } = await import("node-fetch");
   return new Web3Storage({ token: web3StorageAPIKey, fetch });
 }
 
@@ -828,13 +824,26 @@ async function catchPokemon(userAddress, pokemon) {
   };
 
   const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
-  const receipt = await web3.eth.sendSignedTransaction(
-    signedTx.rawTransaction
-  );
+  const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
   // You can handle specific errors here if necessary
 
   return receipt;
+}
+
+function appendHashToIdentifier(id) {
+  const timestamp = new Date().getTime().toString();
+  const hash = crypto.createHash("sha256").update(timestamp).digest("hex");
+  const shortHash = hash.substring(0, 6);
+  return id + shortHash;
+}
+
+async function fetchImageUrl(metadataUrl) {
+  const response = await axios.get(metadataUrl);
+  const metadata = response.data;
+  const imageUrl = metadata.image; // Adjust according to your metadata structure
+  console.log(imageUrl);
+  return imageUrl;
 }
 
 const PORT = 3000;
