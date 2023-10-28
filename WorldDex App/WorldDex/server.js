@@ -180,7 +180,7 @@ app.get("/images", async (req, res) => {
     }
 
     const result = await db.query(
-      "SELECT image_id, blockchain_url, date_added, location_taken, cropped_image, image_data FROM images WHERE user_id = $1",
+      "SELECT image_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details FROM images WHERE user_id = $1",
       [userId]
     );
 
@@ -200,6 +200,7 @@ app.get("/images", async (req, res) => {
         "location_taken": row.location_taken,
         "cropped_image": row.cropped_image,
         "image": row.image_data,
+        "details": row.details,
       });
     });
 
