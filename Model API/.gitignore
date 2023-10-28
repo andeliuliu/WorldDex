@@ -1,0 +1,11 @@
+# .DS_Store files
+**/.DS_Store
+
+# Specific files
+decode_base64.py
+grounding_dino.py
+
+# Directories
+GroundingDINO/
+images/
+
