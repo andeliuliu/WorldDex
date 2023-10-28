@@ -665,6 +665,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             
             // For now, it is only right
             let image = UIImage(cgImage: cgImageRef!, scale: 1, orientation: .right)
+            // TODO: VIVEK SEND IMAGE TO SERVER
             
             let formattedTime = formattedTimestamp(date: Date())
             print("Timestamp: \(formattedTime)")
@@ -686,7 +687,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             //Second is adapting Apple documentation with data of the modified image
             //savePhoto(image.jpegData(compressionQuality: 1)!)
             
-            // TODO: SEND PHOTO, TIMESTAMP, LOCATION to AWS AND BACKEND
+            // TODO: SEND PHOTO, TIMESTAMP, LOCATION to COCKDB
             
             DispatchQueue.main.async {
                 self.delegate?.didFinishProcessingPhoto(image)

@@ -30,7 +30,7 @@ struct PokedexView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Pokedex")
+            .navigationTitle("WorldDex")
         }
     }
 }

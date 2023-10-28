@@ -13,9 +13,11 @@ import SwiftyGif
 
 struct GifImageView: UIViewRepresentable {
     var gifName: String
+    var desiredWidth: CGFloat = 50
+    var desiredHeight: CGFloat = 50
 
     func makeUIView(context: Context) -> UIImageView {
-        let gifImageView = UIImageView()
+        let gifImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: desiredWidth, height: desiredHeight))
         gifImageView.contentMode = .scaleAspectFit
         if let gif = try? UIImage(gifName: gifName) {
             gifImageView.setGifImage(gif)
@@ -24,9 +26,10 @@ struct GifImageView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIImageView, context: Context) {
-        // No update needed for now
+        uiView.frame.size = CGSize(width: desiredWidth, height: desiredHeight)
     }
 }
+
 
 struct CameraInterfaceView: View, CameraActions {
     @ObservedObject var events: UserEvents
@@ -49,9 +52,10 @@ struct CameraInterfaceView: View, CameraActions {
     @State private var showResultView = false
     
     // Object info variables
-    @State private var capturedObject: Bool? = false // TODO: SET TO NIL
+    @State private var capturedObject: Bool? = nil
     @State var item: String = "Bulbasaur"
     @State var croppedImage: UIImage? = UIImage(named: "bulbasaur")
+    @State var probability: Float = 0.0
     @State var location: String = "CalHacks"
     @State var timestamp: String = "4:20AM"
     
@@ -60,11 +64,11 @@ struct CameraInterfaceView: View, CameraActions {
             probabilityView
         } else if showResultView {
             if capturedObject ?? false {
-                SuccessView(item: item, image: croppedImage, location: location, timestamp: timestamp) {
+                SuccessView(item: item, image: croppedImage, location: location, timestamp: timestamp, probability: probability) {
                     self.showResultView = false
                 }
             } else {
-                FailView(item: item, image: capturedImage!) {
+                FailView(item: item, image: capturedImage!, probability: probability) {
                     self.showResultView = false
                 }
             }
@@ -97,8 +101,7 @@ struct CameraInterfaceView: View, CameraActions {
                 .resizable()
                 .scaledToFit()
             VStack {
-                GifImageView(gifName: "diceroll")
-                    .frame(width: 10, height: 10) // Adjust the size as needed
+                GifImageView(gifName: "diceroll", desiredWidth: 50, desiredHeight: 50)
             }
         }
     }
@@ -118,12 +121,23 @@ extension CameraInterfaceView {
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.stopRecording()
-                if let img = UIImage(named: "test") { // TODO: GET IMAGE FROM DATABASE
+                if let img = UIImage(named: "test") { // TODO: COCKDB GET IMAGE FROM DATABASE
                     capturedImage = img
                     showProbabilityView = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) { // TODO: Sage Maker API call
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) { // TODO: Change deadline to when API call completes
+                        // TODO: VIVEK CHANGE DEADLINE TO RECEIVE FROM API
+                        // TODO: VIVEK FILL IN RESPECTIVE FIELDS
+                        // TODO: COCKDB FILL IN REPECTIVE FIELDS
                         showProbabilityView = false
                         showResultView = true
+                        // Vivek
+                        capturedObject = nil
+                        item = "Bulbasaur"
+                        croppedImage = UIImage(named: "bulbasaur")
+                        probability = 0.0
+                        // CockDB
+                        location = "CalHacks"
+                        timestamp = "4:20AM"
                     }
                 }
             }
@@ -137,8 +151,9 @@ extension CameraInterfaceView {
         
         guard let recognitionTask = try? speechRecognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
             if let result = result {
+                // TODO: NOTE, ADD UNIQUE KEY FOR EVERY PAIR OF TEXT AND IMAGE
                 self.recognizedText = result.bestTranscription.formattedString
-                print(self.recognizedText) // Log the recognized text
+                print(self.recognizedText) // TODO: VIVEK UPLOAD TEXT TO SERVER
             }
         }) else { return }
         

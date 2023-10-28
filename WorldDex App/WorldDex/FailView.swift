@@ -10,11 +10,13 @@ import SwiftUI
 struct FailView: View {
     var item: String
     var image: UIImage
+    var probability: Float
     var callback: (() -> Void)?
 
-    init(item: String, image: UIImage, callback: (() -> Void)? = nil) {
+    init(item: String, image: UIImage, probability: Float, callback: (() -> Void)? = nil) {
         self.item = item
         self.image = image
+        self.probability = probability
         self.callback = callback
     }
 
@@ -33,6 +35,8 @@ struct FailView: View {
                     .scaledToFit()
                     .frame(height: 500)
                     .padding([.leading, .trailing])
+                
+                Text("You had a \(probability)% chance of capturing it!")
 
                 Button(action: {
                     self.callback?()

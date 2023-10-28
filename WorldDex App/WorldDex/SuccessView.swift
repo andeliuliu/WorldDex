@@ -22,6 +22,7 @@ struct SuccessView: View {
     var image: UIImage?
     var location: String
     var timestamp: String
+    var probability: Float
     @State var recordingText: String = ""
     var callback: (() -> Void)?
 
@@ -44,7 +45,7 @@ struct SuccessView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
-                Text("You had a XX% chance of capturing it!")
+                Text("You had a \(probability)% chance of capturing it!")
                     .foregroundColor(Color.black)
                 HStack {
                     Text(location)
@@ -59,7 +60,6 @@ struct SuccessView: View {
                 
                 // Only show the mic button when not editing text
                 if recordingText.isEmpty {
-                    Spacer()
                     Button(action: startRecording) {
                         Image(systemName: "mic.fill")
                             .resizable()
