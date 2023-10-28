@@ -1,11 +1,20 @@
-require("dotenv").config();
+/* 
+=================================
+================================= 
+HELPER AND SETUP, IGNORE
+=================================
+================================= 
+*/
 
+require("dotenv").config();
+const db = require("./db");
 const contractABI = require("./contract_abi");
 const express = require("express");
 const bodyParser = require("body-parser");
 const Web3 = require("web3");
 const fs = require("fs");
 const app = express();
+const path = require("path");
 const fileUpload = require('express-fileupload');
 const { Web3Storage, File } = require('web3.storage');
 const { AccountId, PrivateKey, Client, TokenCreateTransaction, TokenType, TokenSupplyType, TokenMintTransaction, TransferTransaction } = require("@hashgraph/sdk");
@@ -19,9 +28,7 @@ const recipientAccountId = AccountId.fromString(process.env.recipientAccountId);
 const recipientPrivateKey = PrivateKey.fromString(process.env.recipientPrivateKey);
 
 app.use(bodyParser.json());
-
 app.use(fileUpload({useTempFiles: true}));
-
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
@@ -47,6 +54,328 @@ if (!privateKey) {
 const account = web3.eth.accounts.privateKeyToAccount(privateKey);
 web3.eth.accounts.wallet.add(account);
 web3.eth.defaultAccount = account.address;
+
+const handleWeb3StorageUpload = async (req) => {
+  const { username } = req.body;
+  const label = req.body['image_id'];
+  const { image } = req?.files ?? {};
+  console.log(`Uploading image: [${label}] to ipfs.`);
+  console.log(`Image: ${image}`);
+  if (!image && !label || label === undefined) {
+    return res.status(200).send({ message: 'invalid input' });
+  }
+  const imageName = `${new Date().getTime()}_${image.name.replaceAll(' ', '')}`;
+  const file = await fileFromPath(image, imageName);
+  const imageCid = await storeFiles(file);
+  const files = await makeFileObjects(label, `https://${imageCid}.ipfs.w3s.link/${imageName}`);
+  const metaDataCid = await storeFiles(files);
+  await fs.promises.unlink(image.tempFilePath);
+  const metadataUrl = `https://${metaDataCid}.ipfs.w3s.link/metadata.json`;
+  console.log(metaDataCid);
+
+  const newTokenId = await mintNft(username, label, metaDataCid, username);
+
+  const ipfsTierInfo = {
+    label,
+    ipfsUrl: metadataUrl,
+    tokenId: newTokenId.newTokenId,
+    serialNumber: newTokenId.serialNumber
+  };
+  return {
+    success: true,
+    ipfsTierInfo: ipfsTierInfo, 
+  };
+};
+
+/* 
+=================================
+================================= 
+END OF HELPER AND SETUP
+=================================
+================================= 
+*/
+
+/* 
+=================================
+================================= 
+LOOK HERE FOR USEFUL ENDPOINTS
+=================================
+================================= 
+*/
+
+// THE FOLLOWING TWO ENDPOINTS PERFORM IN-MEMORY TEMPORARY STORAGE FOR A PHOTO AND RETRIEVAL
+let photoStorage = {};
+
+app.post('/takePhoto', (req, res) => {
+  const { location, time, user, photo } = req.body;
+
+  if (!photo) {
+    return res.status(400).send('Missing photo');
+  }
+
+  // Store photo information and metadata
+  photoStorage = {
+    location,
+    time,
+    user,
+    photo,
+  };
+
+  res.send('Photo taken successfully!');
+});
+
+
+// RETRIEVE THE PHOTO
+app.get('/retrievePhoto', (res) => {
+  if (!photoStorage.path) {
+    return res.status(404).send('No photo available');
+  }
+
+  // Read the image file
+  const image = fs.readFileSync(photoStorage.path);
+
+  // Clear the temporary storage
+  fs.unlinkSync(photoStorage.path);
+
+  // Send the photo and its metadata
+  res.json({
+    location: photoStorage.location,
+    time: photoStorage.time,
+    user: photoStorage.user,
+    photo: image.toString('base64'),
+    mimetype: photoStorage.mimetype,
+  });
+});
+
+app.get('/retrievePhoto', (req, res) => {
+  if (!photoStorage.photo) {
+    return res.status(404).send('No photo available');
+  }
+
+  // Send the photo and its metadata
+  res.json({
+    location: photoStorage.location,
+    time: photoStorage.time,
+    user: photoStorage.user,
+    photo: photoStorage.photo,
+  });
+});
+
+
+
+// THIS WRITES ALL IMAGES TO A TEMPORARY FOLDER FOR A GIVEN USER FOR ACCESS BY FRONT-END
+// EXAMPLE USAGE: http://localhost:3000/images?userId=4
+app.get("/images", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const tempDir = "temp";
+    const userDir = path.join(__dirname, tempDir, userId);
+
+    if (!userId) {
+      return res.status(400).send("Missing userId");
+    }
+
+    // Ensure the directory exists
+    if (!fs.existsSync(userDir)) {
+      fs.mkdirSync(userDir, { recursive: true });
+    } else {
+      // Directory exists, clear it
+      const files = fs.readdirSync(userDir);
+      for (const file of files) {
+        fs.unlinkSync(path.join(userDir, file));
+      }
+    }
+
+    const result = await db.query(
+      "SELECT image_data, image_id FROM images WHERE user_id = $1",
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      console.log("No images found for the user.");
+      return res.status(404).send("Image not found");
+    }
+
+    const imagePaths = [];
+
+    result.rows.forEach((row, index) => {
+      const imageId = row.image_id || `image_${index}`;
+      const imagePath = path.join(userDir, `${imageId}.jpg`);
+      fs.writeFileSync(imagePath, row.image_data);
+    
+      // Convert image data to base64 encoded string
+      const imageDataBase64 = row.image_data.toString('base64');
+    
+      // Push both file path and image data to the array
+      imagePaths.push({ label: row.image_id, base64: imageDataBase64 });
+    });
+
+    res.json({ imagePaths });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// THIS GETS ALL USER IDs (for images), USERNAMES, AND EMAILS
+app.get("/users", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM users");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("error executing query: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// THIS ADDS A NEW USER
+app.post("/users", async (req, res) => {
+  const { user_id, username, email } = req.body;
+
+  if (!user_id || !username || !email) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    await db.query(
+      "INSERT INTO users (user_id, username, email) VALUES ($1, $2, $3)",
+      [user_id, username, email]
+    );
+    res.send("User added successfully!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error.");
+  }
+});
+
+/* THIS EXECUTES A CATCH FOR POKEMON. IT:
+- ADDS A CATCH TO ETHEREUM SMART CONTRACT FOR TRADING
+- UPLOADS TO IPFS FOR DECENTRALIZED STORAGE
+- MINTS AN NFT ON HEDERA TO USER WITH IPFS LINK
+- ADDS TO CENTRALIZED COCKROACHDB STORAGE FOR EASIER USE FROM OUR FRONT-END
+*/
+let catchStorage = {};
+app.post('/catch', async (req, res) => {
+  try {
+    const {
+      image_id,
+      userId,
+      locationTaken,
+      userAddress,
+      imageBase64,
+      croppedImageBase64
+    } = req.body;
+
+    let { image, croppedImage } = req.files ?? {};
+    let imageBuffer, croppedImageBuffer;
+
+    if (!image && imageBase64) {
+      imageBuffer = Buffer.from(imageBase64, 'base64');
+      croppedImageBuffer = Buffer.from(croppedImageBase64, 'base64');
+      
+      const tempDir = path.join(__dirname, 'temp');
+      if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir, { recursive: true });
+      }
+    
+      const imagePath = path.join(tempDir, 'uploaded_image.jpg');
+      const croppedImagePath = path.join(tempDir, 'uploaded_cropped_image.jpg');
+      
+      fs.writeFileSync(imagePath, imageBuffer);
+      fs.writeFileSync(croppedImagePath, croppedImageBuffer);
+    
+      image = {
+        data: imageBuffer,
+        name: 'uploaded_image.jpg',
+        mimetype: 'image/jpeg', // Adjust mimetype accordingly
+        tempFilePath: imagePath
+      };
+    
+      croppedImage = {
+        data: croppedImageBuffer,
+        name: 'uploaded_cropped_image.jpg',
+        mimetype: 'image/jpeg', // Adjust mimetype accordingly
+        tempFilePath: croppedImagePath
+      };
+    
+      req.files = {
+        image,
+        croppedImage
+      };
+    }
+    
+
+    if (!croppedImage || !image) {
+      return res.status(400).send('Missing croppedImage or image');
+    }
+
+    const pokemon = image_id;
+    const dateAdded = new Date().toISOString();
+
+    const imageUploadResponse = await catchPokemonAndMintNft(userAddress, pokemon, req);
+    const blockchainUrl = imageUploadResponse.ipfsTierInfo.ipfsUrl;
+
+    const result = await db.query(
+      "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [
+        image_id,
+        userId,
+        blockchainUrl,
+        dateAdded,
+        locationTaken,
+        imageBuffer,
+        croppedImageBuffer
+      ]
+    );
+
+    // Store in temporary variable
+    catchStorage = {
+      image: imageBuffer,
+      croppedImage: croppedImageBuffer,
+      metadata: {
+        image_id,
+        userId,
+        blockchainUrl,
+        dateAdded,
+        locationTaken,
+        userAddress,
+      }
+    };
+
+    res.send(`Image saved with ID: ${result.rows[0].image_id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get('/retrieveCatchAll', (req, res) => {
+  if (!catchStorage.image || !catchStorage.croppedImage || !catchStorage.metadata) {
+    return res.status(404).send('No catch data available');
+  }
+
+  res.json({
+    image: catchStorage.image.toString('base64'),
+    croppedImage: catchStorage.croppedImage.toString('base64'),
+    metadata: catchStorage.metadata
+  });
+});
+
+
+app.get('/retrieveCatchMetadata', (req, res) => {
+  if (!catchStorage.metadata) {
+    return res.status(404).send('No catch metadata available');
+  }
+
+  res.json(catchStorage.metadata);
+});
+
+/*
+=================================
+================================= 
+END OF USEFUL ENDPOINTS AND BEGINNING OF HORROR
+=================================
+================================= */
 
 app.get("/getCollection", async (req, res) => {
   try {
@@ -333,13 +662,55 @@ app.post("/confirmTrade", async (req, res) => {
   }
 });
 
+
+app.post("/catchPokemonAndMintNft", async (req, res) => {
+  const userAddress = req.body['userAddress'];
+  const pokemon = req.body['image_id'];
+
+  try {
+    // Step 1: Catch the Pokemon
+    await catchPokemon(userAddress, pokemon);
+    
+    // Step 2: Mint the NFT
+    const imageUploadResponse = await handleWeb3StorageUpload(req);
+
+    const { label, ipfsUrl, tokenId, serialNumber } = { imageUploadResponse };
+
+    // Step 3: Respond with success
+    res.json({
+      success: true,
+      message: "Pokemon caught and NFT minted successfully",
+      label: label,
+      ipfsUrl: ipfsUrl,
+      tokenId: tokenId,
+      serialNumber: serialNumber,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+
+
+async function catchPokemonAndMintNft(userAddress, pokemon, req) {
+  // Step 1: Catch the Pokemon
+  await catchPokemon(userAddress, pokemon);
+  
+  // Step 2: Mint the NFT
+  const imageUploadResponse = await handleWeb3StorageUpload(req);
+
+  // Return the result
+  return imageUploadResponse;
+}
+
 async function makeStorageClient() {
   const { default: fetch } = await import('node-fetch');
   return new Web3Storage({ token: web3StorageAPIKey, fetch });
 }
 
-async function makeFileObjects(name, description, image) {
-  const obj = { name, description, image };
+async function makeFileObjects(name, image) {
+  const obj = { name, image };
   const buffer = Buffer.from(JSON.stringify(obj));
 
   const files = [
@@ -390,21 +761,15 @@ async function createNftTokenType() {
   return tokenId;
 }
 
-async function mintNft(username, label, description, metaDataCid, recipId) {
+async function mintNft(username, label, metaDataCid, recipId) {
   const client = Client.forTestnet();
   client.setOperator(operatorAccountId, operatorPrivateKey);
 
   // Mint the NFT
+  const shortString = `${label},${metaDataCid}`;
   const nftMintTx = await new TokenMintTransaction()
     .setTokenId(process.env.tokenId)
-    .addMetadata(
-      Buffer.from(
-        JSON.stringify({
-          label,
-          metaDataCid,
-        })
-      )
-    )
+    .addMetadata(Buffer.from(shortString))
     .freezeWith(client);
 
   const nftMintSign = await nftMintTx.sign(supplyKey);
@@ -471,66 +836,6 @@ async function catchPokemon(userAddress, pokemon) {
 
   return receipt;
 }
-
-const handleWeb3StorageUpload = async (req) => {
-  const { username, label, description } = req.body;
-  const { image } = req?.files ?? {};
-  console.log(`Uploading image: [${label}] to ipfs.`);
-  console.log(`Image: ${image}`);
-  if (!image && !label && !description || label === undefined) {
-    return res.status(200).send({ message: 'invalid input' });
-  }
-  const imageName = `${new Date().getTime()}_${image.name.replaceAll(' ', '')}`;
-  const file = await fileFromPath(image, imageName);
-  const imageCid = await storeFiles(file);
-  const files = await makeFileObjects(label, description, `https://${imageCid}.ipfs.w3s.link/${imageName}`);
-  const metaDataCid = await storeFiles(files);
-  await fs.promises.unlink(image.tempFilePath);
-  const metadataUrl = `https://${metaDataCid}.ipfs.w3s.link/metadata.json`;
-  console.log(metaDataCid);
-
-  const newTokenId = await mintNft(username, label, description, metaDataCid, username);
-
-  const ipfsTierInfo = {
-    label,
-    description,
-    ipfsUrl: metadataUrl,
-    tokenId: newTokenId.newTokenId,
-    serialNumber: newTokenId.serialNumber
-  };
-  return {
-    success: true,
-    ipfsTierInfo: ipfsTierInfo, 
-  };
-};
-
-app.post("/catchPokemonAndMintNft", async (req, res) => {
-  const { userAddress, pokemon } = req.body;
-
-  try {
-    // Step 1: Catch the Pokemon
-    await catchPokemon(userAddress, pokemon);
-    
-    // Step 2: Mint the NFT
-    const imageUploadResponse = await handleWeb3StorageUpload(req);
-
-    const { label, description, ipfsUrl, tokenId, serialNumber } = { imageUploadResponse };
-
-    // Step 3: Respond with success
-    res.json({
-      success: true,
-      message: "Pokemon caught and NFT minted successfully",
-      label: label,
-      description: description,
-      ipfsUrl: ipfsUrl,
-      tokenId: tokenId,
-      serialNumber: serialNumber,
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ success: false, error: "Internal Server Error" });
-  }
-});
 
 const PORT = 3000;
 app.listen(PORT, () => {
