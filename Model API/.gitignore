@@ -4,6 +4,7 @@
 # Specific files
 decode_base64.py
 grounding_dino.py
+.env
 
 # Directories
 GroundingDINO/

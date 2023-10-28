@@ -9,10 +9,14 @@ import cv2
 import base64
 import random
 import openai
+from dotenv import load_dotenv
+import time
+
+load_dotenv()
 
 # Initialize the Flask application
 app = Flask(__name__)
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 CORS(app)
 
 from groundingdino.util.inference import load_model, load_image, predict, annotate
@@ -24,6 +28,13 @@ WEIGHTS_NAME = "groundingdino_swint_ogc.pth"
 WEIGHTS_PATH = "weights/" + WEIGHTS_NAME
 model = load_model(CONFIG_PATH, WEIGHTS_PATH)
 
+CATCH_THRESHOLD = 0.5
+SAVE_CROPPED = False
+
+def save_cropped_image(cropped_img: np.ndarray, filename: str) -> str:
+    path = os.path.join('cropped_images', filename)
+    cv2.imwrite(path, cv2.cvtColor(cropped_img, cv2.COLOR_RGB2BGR))
+    return path
 
 def crop_image(image_source: np.ndarray, boxes: torch.Tensor, padding: int = 10) -> np.ndarray:
     h, w, _ = image_source.shape
@@ -50,9 +61,8 @@ def predict_api():
         image_file = request.files['image']
         transcription = request.form['transcription']
         item_name = get_keyphrase_from_gpt(transcription)
+        print(f'=== searching for: {item_name} ===')
 
-        # Convert the image to the format expected by your model
-        print('=== loading image ===')
         image_source, image = load_image(image_file)
 
         # Model prediction
@@ -67,14 +77,28 @@ def predict_api():
             text_threshold=TEXT_TRESHOLD
         )
 
-        probability = logits.tolist()[0]
-        chances = int(probability * DENOMINATOR)
+        success = False
+        chances = 0
+        if len(logits) > 0:
+            print('logits: ', logits.tolist())
+            max_confidence_index = torch.argmax(logits).item()
+            selected_box = boxes[max_confidence_index]
+            selected_logit = logits[max_confidence_index]
 
-        success = random.random() < probability
-        print('Catch success: ', success)
+            probability = selected_logit.item()
+            chances = int(probability * DENOMINATOR)
+
+            success = (random.random() < probability) and (probability > CATCH_THRESHOLD)
+            print('Catch success: ', success)
 
         if success:
-            cropped_img = crop_image(image_source, boxes)
+            cropped_img = crop_image(image_source, selected_box.unsqueeze(0))
+            cropped_img = cv2.rotate(cropped_img, cv2.ROTATE_90_CLOCKWISE)
+            if SAVE_CROPPED:
+                filename = f"cropped_{int(time.time())}.jpeg"
+                saved_path = save_cropped_image(cropped_img, filename)
+                print(f'Cropped image saved at: {saved_path}')
+
             _, buffer = cv2.imencode('.jpeg', cv2.cvtColor(cropped_img, cv2.COLOR_RGB2BGR))
             cropped_img_str = base64.b64encode(buffer).decode('utf-8')
 
