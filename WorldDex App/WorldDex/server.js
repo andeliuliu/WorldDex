@@ -28,7 +28,6 @@ const recipientAccountId = AccountId.fromString(process.env.recipientAccountId);
 const recipientPrivateKey = PrivateKey.fromString(process.env.recipientPrivateKey);
 
 app.use(bodyParser.json());
-
 app.use(fileUpload({useTempFiles: true}));
 
 const web3 = new Web3(
@@ -104,8 +103,76 @@ LOOK HERE FOR USEFUL ENDPOINTS
 ================================= 
 */
 
+// THE FOLLOWING TWO ENDPOINTS PERFORM IN-MEMORY TEMPORARY STORAGE FOR A PHOTO AND RETRIEVAL
+let photoStorage = {};
 
-// THIS WRITES ALL IMAGES TO A TEMPORARY FOLDER FOR A GIVEN USER
+app.post('/takePhoto', (req, res) => {
+  const { location, time, user } = req.body;
+  const { photo } = req.files ?? {};
+
+  if (!photo) {
+    return res.status(400).send('Missing photo');
+  }
+
+  const photoPath = path.join('/tmp/', photo.name);
+  photo.mv(photoPath, (err) => {
+    if (err) {
+      return res.status(500).send('Failed to save photo');
+    }
+
+    // Store photo information and metadata
+    photoStorage = {
+      location,
+      time,
+      user,
+      path: photoPath,
+      mimetype: photo.mimetype,
+    };
+
+    res.send('Photo taken successfully!');
+  });
+});
+
+app.get('/retrievePhoto', (res) => {
+  if (!photoStorage.path) {
+    return res.status(404).send('No photo available');
+  }
+
+  // Read the image file
+  const image = fs.readFileSync(photoStorage.path);
+
+  // Clear the temporary storage
+  fs.unlinkSync(photoStorage.path);
+
+  // Send the photo and its metadata
+  res.json({
+    location: photoStorage.location,
+    time: photoStorage.time,
+    user: photoStorage.user,
+    photo: image.toString('base64'),
+    mimetype: photoStorage.mimetype,
+  });
+});
+
+app.get('/retrieveCatch', (req, res) => {
+  if (!catchStorage.image || !catchStorage.croppedImage) {
+    return res.status(404).send('No catch available');
+  }
+
+  // Convert the images to base64 for easy transfer
+  const imageBase64 = catchStorage.image.toString('base64');
+  const croppedImageBase64 = catchStorage.croppedImage.toString('base64');
+
+  // Send the images and their metadata
+  res.json({
+    metadata: catchStorage.metadata,
+    image: imageBase64,
+    croppedImage: croppedImageBase64,
+  });
+});
+
+
+// THIS WRITES ALL IMAGES TO A TEMPORARY FOLDER FOR A GIVEN USER FOR ACCESS BY FRONT-END
 // EXAMPLE USAGE: http://localhost:3000/images?userId=4
 app.get("/images", async (req, res) => {
   try {
@@ -144,7 +211,12 @@ app.get("/images", async (req, res) => {
       const imageId = row.image_id || `image_${index}`;
       const imagePath = path.join(userDir, `${imageId}.jpg`);
       fs.writeFileSync(imagePath, row.image_data);
-      imagePaths.push(imagePath);
+    
+      // Convert image data to base64 encoded string
+      const imageDataBase64 = row.image_data.toString('base64');
+    
+      // Push both file path and image data to the array
+      imagePaths.push({ label: row.image_id, base64: imageDataBase64 });
     });
 
     res.json({ imagePaths });
@@ -191,6 +263,8 @@ app.post("/users", async (req, res) => {
 - MINTS AN NFT ON HEDERA TO USER WITH IPFS LINK
 - ADDS TO CENTRALIZED COCKROACHDB STORAGE FOR EASIER USE FROM OUR FRONT-END
 */
+let catchStorage = {};
+
 app.post('/catch', async (req, res) => {
   try {
     const {
@@ -205,6 +279,7 @@ app.post('/catch', async (req, res) => {
     if (!croppedImage || !image) {
       return res.status(400).send('Missing croppedImage or image');
     }
+
     const imageData = fs.readFileSync(image.tempFilePath);
     const croppedImageData = fs.readFileSync(croppedImage.tempFilePath);
 
@@ -213,7 +288,7 @@ app.post('/catch', async (req, res) => {
 
     const imageUploadResponse = await catchPokemonAndMintNft(userAddress, pokemon, req);
     const blockchainUrl = imageUploadResponse.ipfsTierInfo.ipfsUrl;
-    
+
     const result = await db.query(
       "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
       [
@@ -226,6 +301,20 @@ app.post('/catch', async (req, res) => {
         imageData
       ]
     );
+
+    // Store in temporary variable
+    catchStorage = {
+      image: imageData,
+      croppedImage: croppedImageData,
+      metadata: {
+        image_id,
+        userId,
+        blockchainUrl,
+        dateAdded,
+        locationTaken,
+        userAddress,
+      }
+    };
 
     res.send(`Image saved with ID: ${result.rows[0].image_id}`);
   } catch (err) {
