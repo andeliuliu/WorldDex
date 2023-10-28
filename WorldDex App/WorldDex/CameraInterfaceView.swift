@@ -13,19 +13,31 @@ import SwiftyGif
 
 struct GifImageView: UIViewRepresentable {
     var gifName: String
-    var desiredWidth: CGFloat = 50
-    var desiredHeight: CGFloat = 50
+    var desiredWidth: CGFloat = 5
+    var desiredHeight: CGFloat = 5
 
-    func makeUIView(context: Context) -> UIImageView {
-        let gifImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: desiredWidth, height: desiredHeight))
+    func makeUIView(context: Context) -> UIView {
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: desiredWidth, height: desiredHeight))
+        let gifImageView = UIImageView()
         gifImageView.contentMode = .scaleAspectFit
         if let gif = try? UIImage(gifName: gifName) {
             gifImageView.setGifImage(gif)
         }
-        return gifImageView
+
+        gifImageView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(gifImageView)
+
+        NSLayoutConstraint.activate([
+            gifImageView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            gifImageView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            gifImageView.widthAnchor.constraint(equalTo: container.widthAnchor),
+            gifImageView.heightAnchor.constraint(equalTo: container.heightAnchor)
+        ])
+
+        return container
     }
 
-    func updateUIView(_ uiView: UIImageView, context: Context) {
+    func updateUIView(_ uiView: UIView, context: Context) {
         uiView.frame.size = CGSize(width: desiredWidth, height: desiredHeight)
     }
 }
@@ -101,7 +113,8 @@ struct CameraInterfaceView: View, CameraActions {
                 .resizable()
                 .scaledToFit()
             VStack {
-                GifImageView(gifName: "diceroll", desiredWidth: 50, desiredHeight: 50)
+                GifImageView(gifName: "diceroll", desiredWidth: 200, desiredHeight: 200)
+                    .frame(width: 200, height: 200)
             }
         }
     }
@@ -131,7 +144,7 @@ extension CameraInterfaceView {
                         showProbabilityView = false
                         showResultView = true
                         // Vivek
-                        capturedObject = nil
+                        capturedObject = true
                         item = "Bulbasaur"
                         croppedImage = UIImage(named: "bulbasaur")
                         probability = 0.0

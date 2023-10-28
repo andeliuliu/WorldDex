@@ -32,28 +32,48 @@ struct ContentView: View {
             case .social:
                 SocialPageView()
             }
-
+            
             // Custom bottom bar
-            HStack {
+            HStack(spacing: 0) {
+                Spacer(minLength: 20) // Add some space at the start
+                
                 Button(action: { currentPage = .pokedex }) {
                     Image(systemName: "book.fill")
-                    Text("WorldDex")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24) // Adjust this value as needed
+                        .padding()
+                        .foregroundColor(currentPage == .pokedex ? .blue : .gray)
+                        .shadow(radius: 5)
                 }
-                .padding()
+                
+                Spacer() // Space out the buttons evenly
                 
                 Button(action: { currentPage = .camera }) {
                     Image(systemName: "camera.fill")
-                    Text("Camera")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24) // Adjust this value as needed
+                        .padding()
+                        .foregroundColor(currentPage == .camera ? .blue : .gray)
+                        .shadow(radius: 5)
                 }
-                .padding()
+                
+                Spacer() // Space out the buttons evenly
                 
                 Button(action: { currentPage = .social }) {
                     Image(systemName: "person.2.fill")
-                    Text("Social")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24) // Adjust this value as needed
+                        .padding()
+                        .foregroundColor(currentPage == .social ? .blue : .gray)
+                        .shadow(radius: 5)
                 }
-                .padding()
+                
+                Spacer(minLength: 20) // Add some space at the end
             }
-            .background(Color.clear)
+            .background(Color(UIColor.systemBackground))
         }
     }
 }

@@ -34,62 +34,64 @@ struct SuccessView: View {
     @State private var isTextFieldActive = false
 
     var body: some View {
-        VStack(spacing: 20) {
-            if !isTextFieldActive {
-                Text("Congrats! You have captured \(item).")
-                    .font(.largeTitle)
-                    .foregroundColor(Color.black)
-                    .padding([.top, .leading, .trailing])
-                
-                Image(uiImage: image ?? UIImage())
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
-                Text("You had a \(probability)% chance of capturing it!")
-                    .foregroundColor(Color.black)
-                HStack {
-                    Text(location)
+        ZStack {
+            Color.white.edgesIgnoringSafeArea(.all)
+            VStack(spacing: 20) {
+                if !isTextFieldActive {
+                    Text("Congrats! You have captured \(item).")
+                        .font(.largeTitle)
                         .foregroundColor(Color.black)
-                        .font(.title)
-                    Spacer()
-                    Text(timestamp)
-                        .font(.title)
+                        .padding([.top, .leading, .trailing])
+                    
+                    Image(uiImage: image ?? UIImage())
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200)
+                    Text("You had a \(probability)% chance of capturing it!")
                         .foregroundColor(Color.black)
-                }
-                .padding([.leading, .trailing])
-                
-                // Only show the mic button when not editing text
-                if recordingText.isEmpty {
-                    Button(action: startRecording) {
-                        Image(systemName: "mic.fill")
-                            .resizable()
-                            .frame(width: 50, height: 80)
+                    HStack {
+                        Text(location)
+                            .foregroundColor(Color.black)
+                            .font(.title)
+                        Spacer()
+                        Text(timestamp)
+                            .font(.title)
+                            .foregroundColor(Color.black)
+                    }
+                    .padding([.leading, .trailing])
+                    
+                    // Only show the mic button when not editing text
+                    if recordingText.isEmpty {
+                        Button(action: startRecording) {
+                            Image(systemName: "mic.fill")
+                                .resizable()
+                                .frame(width: 50, height: 80)
+                        }
                     }
                 }
-            }
-            
-            if isTextFieldActive || !recordingText.isEmpty {
-                ScrollView {
-                    UITextViewWrapper(text: $recordingText)
-                        .frame(minHeight: 200)
-                        .padding()
-                        .onTapGesture {
-                            self.isTextFieldActive = true
-                        }
+                
+                if isTextFieldActive || !recordingText.isEmpty {
+                    ScrollView {
+                        UITextViewWrapper(text: $recordingText)
+                            .frame(minHeight: 200)
+                            .padding()
+                            .onTapGesture {
+                                self.isTextFieldActive = true
+                            }
+                    }
                 }
+                
+                Button("Done") {
+                    stopRecording()
+                    self.isTextFieldActive = false
+                    callback?()
+                }
+                .font(.title)
             }
-            
-            Button("Done") {
-                stopRecording()
+            .onTapGesture {
+                self.endEditing()
                 self.isTextFieldActive = false
-                callback?()
             }
-            .font(.title)
-        }
-        .background(Color.white.edgesIgnoringSafeArea(.all))
-        .onTapGesture {
-            self.endEditing()
-            self.isTextFieldActive = false
         }
     }
     
