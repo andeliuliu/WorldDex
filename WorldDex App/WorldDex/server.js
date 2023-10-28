@@ -284,9 +284,6 @@ app.post("/confirmTrade", async (req, res) => {
       privateKey = process.env.USER_2_PRIVATE_KEY;
     }
 
-    console.log(privateKey);
-    console.log(tradeId);
-
     // Validate the input
     if (!privateKey || !tradeId) {
       return res.status(400).send("Both privateKey and tradeId are required");
@@ -384,7 +381,6 @@ async function createNftTokenType() {
     .setSupplyKey(supplyKey) // Set the supply key
     .freezeWith(client);
 
-  console.log(`SUPPLY KEY: ${supplyKey}`);
   const tokenCreateSign = await tokenCreateTx.sign(operatorPrivateKey);
   const tokenCreateSubmit = await tokenCreateSign.execute(client);
   const tokenCreateRx = await tokenCreateSubmit.getReceipt(client);
@@ -445,7 +441,7 @@ console.log(`- NFT association with recipient's account: ${associateRecipientRx.
   );
 
   console.log(
-    `NFT Minted and Transferred: Token ID: ${tokenId}, Serial Number: ${serialNumber}, Recipient Account ID: ${recipientAccountId}`
+    `NFT Minted and Transferred: Token ID: ${process.env.tokenId}, Serial Number: ${serialNumber}, Recipient Account ID: ${recipientAccountId}`
   );
 
   let tID = tokenId;
