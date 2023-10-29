@@ -10,6 +10,69 @@ import AVFoundation
 import Speech
 import CoreLocation
 import SwiftyGif
+import UIKit
+
+extension Data {
+    mutating func append(_ string: String) {
+        if let data = string.data(using: .utf8) {
+            append(data)
+        }
+    }
+}
+
+func uploadImageWithTranscription(image: UIImage, transcription: String, completion: @escaping (Result<Data, Error>) -> Void) {
+    
+    // Convert the UIImage to Data (JPEG format)
+    guard let imageData = image.jpegData(compressionQuality: 1.0) else {
+        print("Failed to convert image to Data")
+        return
+    }
+    
+    // Prepare the request
+    let url = URL(string: "http://18.236.216.2:5000/predict")!
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    
+    // Generate boundary string using a unique string
+    let boundary = UUID().uuidString
+    let contentType = "multipart/form-data; boundary=\(boundary)"
+    request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+    
+    // Convert the image and transcription data into a Data object using a multipart/form-data format
+    var body = Data()
+    
+    // Append transcription data
+    body.append("--\(boundary)\r\n")
+    body.append("Content-Disposition: form-data; name=\"transcription\"\r\n\r\n")
+    body.append(transcription.data(using: .utf8)!)
+    body.append("\r\n")
+    
+    // Append image data
+    body.append("--\(boundary)\r\n")
+    body.append("Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n")
+    body.append("Content-Type: image/jpeg\r\n\r\n")
+    body.append(imageData)
+    body.append("\r\n")
+    body.append("--\(boundary)--\r\n")
+    
+    request.httpBody = body
+    
+    // Make the POST request
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        if let error = error {
+            completion(.failure(error))
+            return
+        }
+        guard let data = data else {
+            print("Data is missing from the response")
+            return
+        }
+        completion(.success(data))
+    }
+    
+    task.resume()
+}
+
 
 struct GifImageView: UIViewRepresentable {
     var gifName: String
@@ -45,6 +108,7 @@ struct GifImageView: UIViewRepresentable {
 
 struct CameraInterfaceView: View, CameraActions {
     @ObservedObject var events: UserEvents
+    @ObservedObject var cameraData: CameraData
     
     // For recording audio and recognizing speech
     @State private var isRecording = false
@@ -76,7 +140,7 @@ struct CameraInterfaceView: View, CameraActions {
             probabilityView
         } else if showResultView {
             if capturedObject ?? false {
-                SuccessView(item: item, image: croppedImage, location: location, timestamp: timestamp, probability: probability) {
+                SuccessView(item: item, originalImage: capturedImage, croppedImage: croppedImage, location: location, timestamp: timestamp, probability: probability) {
                     self.showResultView = false
                 }
             } else {
@@ -134,23 +198,46 @@ extension CameraInterfaceView {
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.stopRecording()
-                if let img = UIImage(named: "test") { // TODO: COCKDB GET IMAGE FROM DATABASE
-                    capturedImage = img
+                if let image = self.cameraData.capturedImage, let transcriptionText = self.cameraData.transcription {
+                    capturedImage = image
+                    location = self.cameraData.locationString ?? "No location found"
+                    timestamp = self.cameraData.formattedTime ?? "No time found"
                     showProbabilityView = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) { // TODO: Change deadline to when API call completes
-                        // TODO: VIVEK CHANGE DEADLINE TO RECEIVE FROM API
-                        // TODO: VIVEK FILL IN RESPECTIVE FIELDS
-                        // TODO: COCKDB FILL IN REPECTIVE FIELDS
-                        showProbabilityView = false
-                        showResultView = true
-                        // Vivek
-                        capturedObject = true
-                        item = "Bulbasaur"
-                        croppedImage = UIImage(named: "bulbasaur")
-                        probability = 0.0
-                        // CockDB
-                        location = "CalHacks"
-                        timestamp = "4:20AM"
+                    uploadImageWithTranscription(image: image, transcription: transcriptionText) { result in
+                        switch result {
+                        case .success(let data):
+                            // Handle successful response, convert data to your model if needed
+                            // Assuming `responseJSON` is the dictionary representing the JSON you've shown
+                            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+
+                                // Extracting 'chances' and converting it to Float
+                                if let chances = responseJSON["chances"] as? Int {
+                                    self.probability = Float(chances) / 10.0
+                                }
+
+                                // Extracting 'item_name'
+                                if let itemName = responseJSON["item_name"] as? String {
+                                    self.item = itemName
+                                }
+
+                                // Extracting 'success'
+                                if let success = responseJSON["success"] as? Bool {
+                                    self.capturedObject = success
+                                }
+
+                                // Decoding base64 'cropped_image' to UIImage
+                                if let base64ImageString = responseJSON["cropped_image"] as? String,
+                                   let imageData = Data(base64Encoded: base64ImageString) {
+                                    self.croppedImage = UIImage(data: imageData)
+                                }
+                                
+                                showProbabilityView = false
+                                showResultView = true
+                            }
+                        case .failure(let error):
+                            // Handle errors
+                            print("Error:", error)
+                        }
                     }
                 }
             }
@@ -164,9 +251,9 @@ extension CameraInterfaceView {
         
         guard let recognitionTask = try? speechRecognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
             if let result = result {
-                // TODO: NOTE, ADD UNIQUE KEY FOR EVERY PAIR OF TEXT AND IMAGE
                 self.recognizedText = result.bestTranscription.formattedString
-                print(self.recognizedText) // TODO: VIVEK UPLOAD TEXT TO SERVER
+                print(self.recognizedText)
+                self.cameraData.transcription = self.recognizedText
             }
         }) else { return }
         

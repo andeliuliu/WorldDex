@@ -17,7 +17,7 @@ struct MicProgressBar: View {
                 .frame(height: 20)
             HStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.blue)
+                    .fill(Color("theme1"))
                     .frame(width: CGFloat(self.progress) * UIScreen.main.bounds.width, height: 20)
                 Spacer()
             }

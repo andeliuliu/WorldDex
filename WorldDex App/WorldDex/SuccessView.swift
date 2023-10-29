@@ -19,10 +19,12 @@ extension View {
 
 struct SuccessView: View {
     var item: String
-    var image: UIImage?
+    var originalImage: UIImage?
+    var croppedImage: UIImage?
     var location: String
     var timestamp: String
     var probability: Float
+    var userId: String = "Anthony"
     @State var recordingText: String = ""
     var callback: (() -> Void)?
 
@@ -32,30 +34,33 @@ struct SuccessView: View {
     private let audioEngine = AVAudioEngine()
     @State private var lastTranscriptionTime = Date()
     @State private var isTextFieldActive = false
+    
+    let url = URL(string: "http://192.168.0.113:3000/catch")! // TODO: UPDATE TO CORRECT HOST
 
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
+            Color("theme1").edgesIgnoringSafeArea(.all)
             VStack(spacing: 20) {
                 if !isTextFieldActive {
                     Text("Congrats! You have captured \(item).")
-                        .font(.largeTitle)
+                        .font(Font.custom("Avenir", size: 34))
                         .foregroundColor(Color.black)
                         .padding([.top, .leading, .trailing])
                     
-                    Image(uiImage: image ?? UIImage())
+                    Image(uiImage: croppedImage ?? UIImage())
                         .resizable()
                         .scaledToFit()
                         .frame(width: 200, height: 200)
-                    Text("You had a \(probability)% chance of capturing it!")
+                    Text("You had a \(String(format: "%.1f", probability))% chance of capturing it!")
+                        .font(Font.custom("Avenir", size: 16))
                         .foregroundColor(Color.black)
                     HStack {
                         Text(location)
                             .foregroundColor(Color.black)
-                            .font(.title)
+                            .font(Font.custom("Avenir", size: 22))
                         Spacer()
                         Text(timestamp)
-                            .font(.title)
+                            .font(Font.custom("Avenir", size: 22))
                             .foregroundColor(Color.black)
                     }
                     .padding([.leading, .trailing])
@@ -85,6 +90,30 @@ struct SuccessView: View {
                     stopRecording()
                     self.isTextFieldActive = false
                     callback?()
+                    let croppedImageData: Data? = croppedImage?.jpegData(compressionQuality: 0.5) // you can adjust the compression quality
+                    let croppedImageBase64String: String? = croppedImageData?.base64EncodedString()
+                    let originalImageData: Data? = originalImage?.jpegData(compressionQuality: 0.5) // you can adjust the compression quality
+                    let originalImageBase64String: String? = originalImageData?.base64EncodedString()
+                    var request = URLRequest(url: url)
+                    request.httpMethod = "POST"
+                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    let data: [String: Any] = ["image_id": item,
+                                               "userId": userId,
+                                               "details": recordingText,
+                                               "locationTaken": location,
+                                               "imageBase64": originalImageBase64String,
+                                               "croppedImageBase64": croppedImageBase64String,
+                                               "probability" : probability]
+                    let jsonData = try? JSONSerialization.data(withJSONObject: data)
+                    request.httpBody = jsonData
+                    URLSession.shared.dataTask(with: request) { (data, response, error) in
+                        // Handle response here
+                        if let error = error {
+                            print("Error: \(error)")
+                        } else if let data = data {
+                            print(data)
+                        }
+                    }.resume()
                 }
                 .font(.title)
             }

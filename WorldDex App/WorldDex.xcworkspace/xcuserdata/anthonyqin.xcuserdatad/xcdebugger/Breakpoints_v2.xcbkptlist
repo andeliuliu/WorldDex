@@ -14,42 +14,26 @@
             filePath = "WorldDex/CameraViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "557"
-            endingLineNumber = "557"
+            startingLineNumber = "559"
+            endingLineNumber = "559"
             landmarkName = "changeFlashMode()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "CBA56C26-22F6-4AB8-B065-F4B1A623226E - e67734d4226efcf4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Sendable () -&gt; () in WorldDex.CameraViewController.rotateCamera() -&gt; ()"
-                  moduleName = "WorldDex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/anthonyqin/Desktop/Calhacks%202023/WorldDex/WorldDex%20App/WorldDex/CameraViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "557"
-                  endingLineNumber = "557"
-                  offsetFromSymbolStart = "3384">
-               </Location>
-               <Location
-                  uuid = "CBA56C26-22F6-4AB8-B065-F4B1A623226E - 8020605e2e955964"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "WorldDex.CameraViewController.changeFlashMode() -&gt; ()"
-                  moduleName = "WorldDex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/anthonyqin/Desktop/Calhacks%202023/WorldDex/WorldDex%20App/WorldDex/CameraViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "557"
-                  endingLineNumber = "557"
-                  offsetFromSymbolStart = "200">
-               </Location>
-            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AD85A30C-FCF7-464C-86DE-8D8FEB555CD7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WorldDex/CameraView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "updateUIViewController(_:context:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -9,10 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var events = UserEvents()
+    @ObservedObject var cameraData = CameraData()
     
     // Enum to represent the current page
     enum Page {
-        case pokedex, camera, social
+        case pokedex, camera, social, profile
     }
     
     // State to track the current page
@@ -26,11 +27,13 @@ struct ContentView: View {
                 PokedexView()
             case .camera:
                 ZStack {
-                    CameraView(events: events, applicationName: "WorldDex")
-                    CameraInterfaceView(events: events)
+                    CameraView(events: events, cameraData: cameraData, applicationName: "WorldDex")
+                    CameraInterfaceView(events: events, cameraData: cameraData)
                 }
             case .social:
                 SocialPageView()
+            case .profile:
+                ProfileView()
             }
             
             // Custom bottom bar
@@ -41,45 +44,52 @@ struct ContentView: View {
                     Image(systemName: "book.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 24) // Adjust this value as needed
+                        .frame(height: 24)
                         .padding()
-                        .foregroundColor(currentPage == .pokedex ? .blue : .gray)
+                        .foregroundColor(currentPage == .pokedex ? Color("theme2") : .gray)
                         .shadow(radius: 5)
                 }
                 
-                Spacer() // Space out the buttons evenly
+                Spacer()
                 
                 Button(action: { currentPage = .camera }) {
                     Image(systemName: "camera.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 24) // Adjust this value as needed
+                        .frame(height: 24)
                         .padding()
-                        .foregroundColor(currentPage == .camera ? .blue : .gray)
+                        .foregroundColor(currentPage == .camera ? Color("theme1") : .gray)
                         .shadow(radius: 5)
                 }
                 
-                Spacer() // Space out the buttons evenly
+                Spacer()
                 
                 Button(action: { currentPage = .social }) {
                     Image(systemName: "person.2.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 24) // Adjust this value as needed
+                        .frame(height: 24)
                         .padding()
-                        .foregroundColor(currentPage == .social ? .blue : .gray)
+                        .foregroundColor(currentPage == .social ? Color("theme2") : .gray)
+                        .shadow(radius: 5)
+                }
+
+                Spacer()
+
+                // Added profile button
+                Button(action: { currentPage = .profile }) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24)
+                        .padding()
+                        .foregroundColor(currentPage == .profile ? Color("theme2") : .gray)
                         .shadow(radius: 5)
                 }
                 
                 Spacer(minLength: 20) // Add some space at the end
             }
-            .background(Color(UIColor.systemBackground))
+            .background(currentPage == .camera ? Color(UIColor.systemBackground) : Color("theme1"))
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }

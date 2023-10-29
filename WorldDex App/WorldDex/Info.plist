@@ -2,30 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Camera</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Export AR Media</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Export AR Media</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Audiovisual Recording</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-	</array>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This app uses speech recognition to enable voice commands and text-to-speech functionality.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app uses your location to share where you captured an item.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>18.236.216.2</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	<key>UILaunchScreen</key>
+	<dict/>
 </dict>
 </plist>
