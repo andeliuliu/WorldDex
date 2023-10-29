@@ -1,5 +1,6 @@
-<img src="https://github.com/antqin/WorldDex/assets/91863950/c2f2cb62-05e2-4753-a3d1-1014ca397860" alt="logo" width="300"/>
-
+<div style="text-align: center;">
+  <img src="https://github.com/antqin/WorldDex/assets/91863950/c2f2cb62-05e2-4753-a3d1-1014ca397860" alt="logo" width="300" style="display: block; margin: 0 auto;">
+</div>
 ## Inspiration
 As we go about our lives, all of us experience so much, witness so much, learn so much. When we were kids, exploration and excitement were a crucial part of every day, but as adults, responsibility can cause us to lose some of that magic. We wanted to remind each other that although we may not live in the Kanto region, the Earth still offers an enormous amount to see—and infinite amount to collect.
 
