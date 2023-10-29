@@ -23,16 +23,12 @@ def get_keyphrase_from_gpt(text_prompt):
         jaguar
 
         Example:
-        Setence: The moon the moon I see the moon
-        moon
+        Sentence: this is a ball of yarn
+        ball of yarn
 
         Example:
         Sentence: I saw a beautiful car on the road.
         car
-        
-        Example:
-        Sentence: The sunset was interrupted by a passing airplane.
-        airplane
 
         Example:
         Sentence: I want to catch this red water bottle right now.
