@@ -72,9 +72,9 @@ struct PokemonDetailView: View {
                                 .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
                             Text(formattedDate)
                                 .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
-                        }.padding(.bottom, 8)
+                        }
                         Text(captureText)
-                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title3).pointSize))
+                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
                             .italic()
                             .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
@@ -83,9 +83,9 @@ struct PokemonDetailView: View {
                     }
                     .foregroundColor(.black)
                     
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 0) {
                         Text("Live Observations:")
-                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title2).pointSize))
+                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title3).pointSize))
                             .bold()
                         ScrollView {
                             Text(pokemon.details)
@@ -94,7 +94,6 @@ struct PokemonDetailView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                                 .multilineTextAlignment(.leading)
                         }
-                        .frame(maxHeight: 20)
                     }
                     .foregroundColor(.black)
 
