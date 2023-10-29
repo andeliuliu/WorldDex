@@ -64,26 +64,37 @@ struct PokemonDetailView: View {
                     Text(pokemon.image_id.split(separator: "_").first ?? "")
                         .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize))
                         .foregroundColor(.black)
+                        .bold()
                     
                     VStack(alignment: .leading) {
-                        Text(pokemon.location_taken)
-                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title3).pointSize))
-                        Text(formattedDate)
-                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title3).pointSize))
-                            .padding(.bottom, 8)
+                        HStack {
+                            Text(pokemon.location_taken)
+                                .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
+                            Text(formattedDate)
+                                .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
+                        }.padding(.bottom, 8)
                         Text(captureText)
                             .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title3).pointSize))
+                            .italic()
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+                            .foregroundColor(.black)
                     }
                     .foregroundColor(.black)
                     
                     VStack(alignment: .leading) {
                         Text("Live Observations:")
                             .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title2).pointSize))
-                        Text(pokemon.details)
-                            .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
-                            .lineLimit(nil)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
+                            .bold()
+                        ScrollView {
+                            Text(pokemon.details)
+                                .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .frame(maxHeight: 20)
                     }
                     .foregroundColor(.black)
 
@@ -101,7 +112,7 @@ struct PokemonDetailView: View {
                         Button(action: {}, label: {
                             Image(systemName: "mic.fill")
                                 .resizable()
-                                .frame(width: 50, height: 80)
+                                .frame(width: 40, height: 60)
                                 .colorMultiply(isPressed ? Color.gray : Color.white) // Highlight effect
                                 .onLongPressGesture(minimumDuration: .infinity, pressing: { isPressing in
                                     self.isPressed = isPressing
@@ -119,6 +130,9 @@ struct PokemonDetailView: View {
                                     }
                                 }, perform: {})
                         })
+                        Text("Press and hold to talk to AI")
+                            .font(Font.custom("Avenir", size: 20))
+                            .foregroundColor(Color("theme2"))
                         .padding(.bottom, 10)
                     }
                 }

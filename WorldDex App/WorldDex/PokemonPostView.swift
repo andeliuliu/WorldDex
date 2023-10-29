@@ -17,6 +17,7 @@ struct PokemonPostView: View {
                     Text(pokemon.user_id)
                         .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .headline).pointSize))
                         .foregroundColor(.black)
+                        .bold()
                     Text(pokemon.location_taken)
                         .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
                         .foregroundColor(.black)
@@ -43,10 +44,12 @@ struct PokemonPostView: View {
             Text(pokemon.image_id.split(separator: "_").first ?? "")
                 .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title2).pointSize))
                 .foregroundColor(.black)
+                .bold()
             
             Text(captureText)
-                .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .title3).pointSize))
+                .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize))
                 .foregroundColor(.black)
+                .italic()
             
             Text(pokemon.details)
                 .font(Font.custom("Avenir", size: UIFont.preferredFont(forTextStyle: .body).pointSize))

@@ -24,7 +24,7 @@ struct SuccessView: View {
     var location: String
     var timestamp: String
     var probability: Float
-    var userId: String = "Anthony"
+    var userId: String = UserDefaults.standard.string(forKey: "username") ?? ""
     @State var recordingText: String = ""
     var callback: (() -> Void)?
 
@@ -67,6 +67,9 @@ struct SuccessView: View {
                     
                     // Only show the mic button when not editing text
                     if recordingText.isEmpty {
+                        Text("Press to record live voice transcription notes")
+                            .font(Font.custom("Avenir", size: 20))
+                            .foregroundColor(Color("theme2"))
                         Button(action: startRecording) {
                             Image(systemName: "mic.fill")
                                 .resizable()
@@ -115,7 +118,11 @@ struct SuccessView: View {
                         }
                     }.resume()
                 }
-                .font(.title)
+                .font(Font.custom("Avenir", size: 20))
+                .padding(10)
+                .background(Color("theme2"))
+                .foregroundColor(Color("theme1"))
+                .cornerRadius(5)
             }
             .onTapGesture {
                 self.endEditing()
@@ -129,6 +136,7 @@ struct SuccessView: View {
         isRecording = true
         let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         let inputNode = audioEngine.inputNode
+        recordingText = "Start speaking!"
         
         guard let recognitionTask = try? speechRecognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
             if let result = result {

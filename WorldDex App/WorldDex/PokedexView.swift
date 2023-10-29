@@ -6,7 +6,7 @@
 //
 import SwiftUI
 import Combine
-
+import SwiftyGif
 
 struct PokemonCell: View {
     var pokemon: Pokemon
@@ -39,7 +39,8 @@ struct PokemonCell: View {
 struct PokedexView: View {
     @State private var pokemonList: [Pokemon] = []
     @State private var isLoading: Bool = true // Track loading state
-    var userId: String = "Anthony"  // Replace with actual user ID
+    @State private var isEmpty: Bool = true
+    var userId: String = UserDefaults.standard.string(forKey: "username") ?? ""
 
     func fetchPokemon() {
         let url = URL(string:"http://192.168.0.113:3000/images?user_id=\(userId)")!
@@ -53,13 +54,18 @@ struct PokedexView: View {
                     })
                     DispatchQueue.main.async {
                         self.pokemonList = sortedPokemons
+                        self.isEmpty = false
                         self.isLoading = false
                     }
                 } catch {
                     print("Error decoding: \(error)")
+                    self.isLoading = false
+                    self.isEmpty = true
                 }
             } else if let error = error {
                 print("Error fetching data: \(error)")
+                self.isLoading = false
+                self.isEmpty = true
             }
         }.resume()
     }
@@ -67,15 +73,20 @@ struct PokedexView: View {
     var body: some View {
         ZStack {
             Color("theme1").edgesIgnoringSafeArea(.all)
-            if isLoading {
-                Image("worldexIcon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .padding()
-                    .onAppear {
-                        self.fetchPokemon()
+            if isEmpty {
+                VStack {
+                    Image("worldexIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .onAppear {
+                            self.fetchPokemon()
+                        }
+                    if isLoading {
+                        GifImageView(gifName: "loading", desiredWidth: 50, desiredHeight: 50)
+                            .frame(width: 50, height: 50)
                     }
+                }
             } else {
                 NavigationView {
                     Group {

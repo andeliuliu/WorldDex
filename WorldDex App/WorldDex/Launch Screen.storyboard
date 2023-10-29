@@ -29,7 +29,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" highlightedImage="logo" translatesAutoresizingMaskIntoConstraints="NO" id="Kv8-3U-lE0">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="worldexIcon" highlightedImage="worldexIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Kv8-3U-lE0">
                                 <rect key="frame" x="38" y="354" width="317" height="169"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="169" id="ZPW-RN-n8v"/>
@@ -57,9 +57,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo" width="480" height="480"/>
+        <image name="worldexIcon" width="1024" height="1024"/>
         <namedColor name="theme1">
-            <color red="0.84313726430000002" green="0.81176471709999998" blue="0.7254902124" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.84299999475479126" green="0.81199997663497925" blue="0.72500002384185791" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
 </document>

@@ -36,6 +36,7 @@
 		BB90977A2AEE2E1D00817C37 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9097792AEE2E1D00817C37 /* SignUpView.swift */; };
 		BB90977C2AEE2E3200817C37 /* LogInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB90977B2AEE2E3200817C37 /* LogInView.swift */; };
 		BB90977E2AEE2E4E00817C37 /* UserDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB90977D2AEE2E4E00817C37 /* UserDataView.swift */; };
+		BB9097802AEE5AD500817C37 /* loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB90977F2AEE5AD500817C37 /* loading.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		BB9097792AEE2E1D00817C37 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		BB90977B2AEE2E3200817C37 /* LogInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInView.swift; sourceTree = "<group>"; };
 		BB90977D2AEE2E4E00817C37 /* UserDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataView.swift; sourceTree = "<group>"; };
+		BB90977F2AEE5AD500817C37 /* loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = loading.gif; sourceTree = "<group>"; };
 		BE30E6C447A9CBE6FB932940 /* Pods-WorldDex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorldDex.debug.xcconfig"; path = "Target Support Files/Pods-WorldDex/Pods-WorldDex.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -141,6 +143,7 @@
 				BB0313D52AEC9F0D005D3715 /* PokemonDetailView.swift */,
 				BB0313D12AEC9ECE005D3715 /* Data.swift */,
 				BB0313CD2AEC9AA7005D3715 /* CameraInterfaceView.swift */,
+				BB90977F2AEE5AD500817C37 /* loading.gif */,
 				BB0313F62AECF6FB005D3715 /* diceroll.gif */,
 				BB0313BE2AEC7DBC005D3715 /* Assets.xcassets */,
 				BB0313C02AEC7DBC005D3715 /* Preview Content */,
@@ -231,6 +234,7 @@
 			files = (
 				BB0313F72AECF6FB005D3715 /* diceroll.gif in Resources */,
 				BB0313C22AEC7DBC005D3715 /* Preview Assets.xcassets in Resources */,
+				BB9097802AEE5AD500817C37 /* loading.gif in Resources */,
 				BB15A5AF2AEDF36F009182AC /* Launch Screen.storyboard in Resources */,
 				BB0313BF2AEC7DBC005D3715 /* Assets.xcassets in Resources */,
 			);

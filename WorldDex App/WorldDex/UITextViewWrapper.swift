@@ -16,7 +16,7 @@ struct UITextViewWrapper: UIViewRepresentable {
         textView.delegate = context.coordinator
         textView.textColor = .black
         textView.backgroundColor = UIColor(named: "theme1")
-        textView.font = UIFont(name: "Avenir", size: 15)
+        textView.font = UIFont(name: "Avenir", size: 20)
         return textView
     }
 

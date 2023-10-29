@@ -105,7 +105,6 @@ struct GifImageView: UIViewRepresentable {
     }
 }
 
-
 struct CameraInterfaceView: View, CameraActions {
     @ObservedObject var events: UserEvents
     @ObservedObject var cameraData: CameraData
