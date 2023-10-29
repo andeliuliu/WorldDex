@@ -42,7 +42,7 @@ const recipientPrivateKey = PrivateKey.fromString(
   process.env.recipientPrivateKey
 );
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1mb' })); // Here, the limit is set to 10 Megabytes
 app.use(fileUpload({ useTempFiles: true }));
 
 const web3 = new Web3(
@@ -161,23 +161,6 @@ app.get("/retrievePhoto", (req, res) => {
 app.get("/images", async (req, res) => {
   try {
     const userId = req.query.userId;
-    const tempDir = "temp";
-    const userDir = path.join(__dirname, tempDir, userId);
-
-    if (!userId) {
-      return res.status(400).send("Missing userId");
-    }
-
-    // Ensure the directory exists
-    if (!fs.existsSync(userDir)) {
-      fs.mkdirSync(userDir, { recursive: true });
-    } else {
-      // Directory exists, clear it
-      const files = fs.readdirSync(userDir);
-      for (const file of files) {
-        fs.unlinkSync(path.join(userDir, file));
-      }
-    }
 
     const result = await db.query(
       "SELECT image_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details FROM images WHERE user_id = $1",
