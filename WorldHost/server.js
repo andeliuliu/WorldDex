@@ -42,7 +42,7 @@ const recipientPrivateKey = PrivateKey.fromString(
   process.env.recipientPrivateKey
 );
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1mb' })); // Here, the limit is set to 10 Megabytes
 app.use(fileUpload({ useTempFiles: true }));
 
 const web3 = new Web3(
@@ -142,6 +142,44 @@ app.post("/takePhoto", (req, res) => {
   res.send("Photo taken successfully!");
 });
 
+app.get("/excludeUserImages", async (req, res) => {
+  try {
+    const userId = req.query.user_id;
+    console.log(userId);
+
+    const result = await db.query(
+      "SELECT image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details, probability FROM images WHERE user_id != $1",
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      console.log("No images found excluding the user.");
+      return res.status(404).send("Image not found");
+    }
+
+    const imagePaths = [];
+
+    result.rows.forEach((row, index) => {
+      imagePaths.push({
+        "image_id": row.image_id,
+        "user_id": row.user_id,
+        "blockchain_url": row.blockchain_url,
+        "date_added": row.date_added,
+        "location_taken": row.location_taken,
+        "cropped_image": row.cropped_image,
+        "image": row.image_data,
+        "details": row.details,
+        "probability": row.probability,
+      });
+    });
+
+    res.json({ imagePaths });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.get("/retrievePhoto", (req, res) => {
   if (!photoStorage.photo) {
     return res.status(404).send("No photo available");
@@ -156,31 +194,45 @@ app.get("/retrievePhoto", (req, res) => {
   });
 });
 
+app.get("/specificImage", async (req, res) => {
+  try {
+    const image_id = req.query.image_id;
+    const result = await db.query(
+      "SELECT user_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details, probability FROM images WHERE image_id = $1",
+      [image_id]
+    );
+
+    if (result.rows.length === 0) {
+      console.log("No images found for this image id");
+      return res.status(404).send("Image data not found for given image identifier");
+    }
+
+    let { user_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details, probability } = result.rows[0];
+
+    res.json({
+      user_id,
+      blockchain_url,
+      date_added,
+      location_taken,
+      cropped_image,
+      image_data,
+      details,
+      probability,
+    });
+  } catch (err) {
+    console.error("Database error: ", err);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
 // THIS WRITES ALL IMAGES TO A TEMPORARY FOLDER FOR A GIVEN USER FOR ACCESS BY FRONT-END
 // EXAMPLE USAGE: http://localhost:3000/images?userId=4
 app.get("/images", async (req, res) => {
   try {
-    const userId = req.query.userId;
-    const tempDir = "temp";
-    const userDir = path.join(__dirname, tempDir, userId);
-
-    if (!userId) {
-      return res.status(400).send("Missing userId");
-    }
-
-    // Ensure the directory exists
-    if (!fs.existsSync(userDir)) {
-      fs.mkdirSync(userDir, { recursive: true });
-    } else {
-      // Directory exists, clear it
-      const files = fs.readdirSync(userDir);
-      for (const file of files) {
-        fs.unlinkSync(path.join(userDir, file));
-      }
-    }
+    const userId = req.query.user_id;
 
     const result = await db.query(
-      "SELECT image_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details FROM images WHERE user_id = $1",
+      "SELECT image_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details, probability FROM images WHERE user_id = $1",
       [userId]
     );
 
@@ -201,6 +253,7 @@ app.get("/images", async (req, res) => {
         "cropped_image": row.cropped_image,
         "image": row.image_data,
         "details": row.details,
+        "probability": row.probability,
       });
     });
 
@@ -223,17 +276,17 @@ app.get("/users", async (req, res) => {
 });
 
 // THIS ADDS A NEW USER
-app.post("/users", async (req, res) => {
-  const { user_id, username, email } = req.body;
+app.post("/signup", async (req, res) => {
+  const { user_id, email, user_password } = req.body;
 
-  if (!username || !email) {
+  if (!user_id || !email || !user_password) {
     return res.status(400).send("Missing parameters.");
   }
 
   try {
     await db.query(
-      "INSERT INTO users (user_id, username, email) VALUES ($1, $2, $3)",
-      [user_id, username, email]
+      "INSERT INTO users (user_id, email, user_password) VALUES ($1, $2, $3)",
+      [user_id, email, user_password]
     );
     res.send("User added successfully!");
   } catch (err) {
@@ -241,6 +294,53 @@ app.post("/users", async (req, res) => {
     res.status(500).send("Server error.");
   }
 });
+
+app.get("/userData", async (req, res) => {
+  try {
+    const { user_id } = req.query; // As you are using a GET request, parameters should be in req.query not req.body
+    const result = await db.query(
+      "SELECT * FROM users WHERE user_id = $1",
+      [user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const email = result.rows[0]['email'];
+    return res.status(200).json({ email: email });
+    
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+// TRY LOGIN FOR USER
+app.post("/login", async (req, res) => {
+  const { user_id, user_password } = req.body;
+  try {
+    const result = await db.query(
+      "SELECT * FROM users WHERE user_id = $1",
+      [user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).send("User not found.");
+    }
+    const real_password = result.rows[0]['user_password'];
+    if (real_password === user_password) {
+      return res.status(200).send("Logged in successfully!");
+    } else {
+      return res.status(400).send("Failed to login.");
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server error.");
+  }
+});
+
 
 /* THIS EXECUTES A CATCH FOR POKEMON. IT:
 - ADDS A CATCH TO ETHEREUM SMART CONTRACT FOR TRADING
@@ -250,6 +350,8 @@ app.post("/users", async (req, res) => {
 */
 let catchStorage = {};
 app.post("/catch", async (req, res) => {
+  console.log("");
+  console.log('NEW CATCH!');
   try {
     let { image_id } = req.body;
     const {
@@ -258,6 +360,7 @@ app.post("/catch", async (req, res) => {
       locationTaken,
       imageBase64,
       croppedImageBase64,
+      probability,
     } = req.body;
 
     const userAddress = "0xCcF3DAe5328BFfD77854f4f2Cdd12072033607cA"
@@ -317,16 +420,17 @@ app.post("/catch", async (req, res) => {
     );
 
     const result = await db.query(
-      "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+      "INSERT INTO images (image_id, user_id, blockchain_url, date_added, location_taken, cropped_image, image_data, details, probability) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
       [
         image_id,
         userId,
         blockchainUrl,
         dateAdded,
         locationTaken,
-        imageBuffer,
-        croppedImageBuffer,
-        details
+        croppedImageBase64,
+        imageBase64,
+        details,
+        probability,
       ]
     );
 
@@ -341,10 +445,11 @@ app.post("/catch", async (req, res) => {
         dateAdded,
         locationTaken,
         userAddress,
-        details
+        details,
+        probability,
       },
     };
-
+    console.log("Finished catch");
     res.send(`Image saved with ID: ${result.rows[0].image_id}`);
   } catch (err) {
     console.error(err);
@@ -802,9 +907,6 @@ console.log(`- NFT association with recipient's account: ${associateRecipientRx.
 
   const tokenTransferSubmit = await tokenTransferTx.execute(client);
   const tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
-  console.log(
-    `\n- NFT transfer from Treasury to recipient: ${tokenTransferRx.status} \n`
-  );
 
   console.log(
     `NFT Minted and Transferred: Token ID: ${process.env.tokenId}, Serial Number: ${serialNumber}, Recipient Account ID: ${recipientAccountId}`
@@ -840,7 +942,7 @@ function appendHashToIdentifier(id) {
   const timestamp = new Date().getTime().toString();
   const hash = crypto.createHash("sha256").update(timestamp).digest("hex");
   const shortHash = hash.substring(0, 6);
-  return id + shortHash;
+  return id + "_" + shortHash;
 }
 
 async function fetchImageUrl(metadataUrl) {

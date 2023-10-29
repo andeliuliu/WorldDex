@@ -30,6 +30,13 @@
 		BB0313F92AECFA82005D3715 /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313F82AECFA82005D3715 /* SuccessView.swift */; };
 		BB0313FD2AED0BCF005D3715 /* FailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313FC2AED0BCF005D3715 /* FailView.swift */; };
 		BB0313FF2AED0BF7005D3715 /* UITextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0313FE2AED0BF7005D3715 /* UITextViewWrapper.swift */; };
+		BB15A5AB2AEDBB35009182AC /* CameraData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB15A5AA2AEDBB35009182AC /* CameraData.swift */; };
+		BB15A5AF2AEDF36F009182AC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB15A5AE2AEDF36F009182AC /* Launch Screen.storyboard */; };
+		BB9097782AEE2CF400817C37 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9097772AEE2CF400817C37 /* ProfileView.swift */; };
+		BB90977A2AEE2E1D00817C37 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9097792AEE2E1D00817C37 /* SignUpView.swift */; };
+		BB90977C2AEE2E3200817C37 /* LogInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB90977B2AEE2E3200817C37 /* LogInView.swift */; };
+		BB90977E2AEE2E4E00817C37 /* UserDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB90977D2AEE2E4E00817C37 /* UserDataView.swift */; };
+		BB9097802AEE5AD500817C37 /* loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB90977F2AEE5AD500817C37 /* loading.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +65,13 @@
 		BB0313F82AECFA82005D3715 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
 		BB0313FC2AED0BCF005D3715 /* FailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FailView.swift; path = "/Users/anthonyqin/Desktop/Calhacks 2023/WorldDex/WorldDex App/WorldDex/FailView.swift"; sourceTree = "<absolute>"; };
 		BB0313FE2AED0BF7005D3715 /* UITextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewWrapper.swift; sourceTree = "<group>"; };
+		BB15A5AA2AEDBB35009182AC /* CameraData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraData.swift; sourceTree = "<group>"; };
+		BB15A5AE2AEDF36F009182AC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		BB9097772AEE2CF400817C37 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		BB9097792AEE2E1D00817C37 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		BB90977B2AEE2E3200817C37 /* LogInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInView.swift; sourceTree = "<group>"; };
+		BB90977D2AEE2E4E00817C37 /* UserDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataView.swift; sourceTree = "<group>"; };
+		BB90977F2AEE5AD500817C37 /* loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = loading.gif; sourceTree = "<group>"; };
 		BE30E6C447A9CBE6FB932940 /* Pods-WorldDex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WorldDex.debug.xcconfig"; path = "Target Support Files/Pods-WorldDex/Pods-WorldDex.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -104,6 +118,7 @@
 		BB0313B92AEC7DBA005D3715 /* WorldDex */ = {
 			isa = PBXGroup;
 			children = (
+				BB15A5AE2AEDF36F009182AC /* Launch Screen.storyboard */,
 				BB0313DF2AECC8FB005D3715 /* Info.plist */,
 				BB0313F82AECFA82005D3715 /* SuccessView.swift */,
 				BB0313FE2AED0BF7005D3715 /* UITextViewWrapper.swift */,
@@ -115,14 +130,20 @@
 				BB0313E22AECCED5005D3715 /* CameraViewControllerDelegate.swift */,
 				BB0313BA2AEC7DBA005D3715 /* WorldDexApp.swift */,
 				BB0313BC2AEC7DBA005D3715 /* ContentView.swift */,
+				BB9097772AEE2CF400817C37 /* ProfileView.swift */,
+				BB90977B2AEE2E3200817C37 /* LogInView.swift */,
+				BB90977D2AEE2E4E00817C37 /* UserDataView.swift */,
+				BB9097792AEE2E1D00817C37 /* SignUpView.swift */,
 				BB0313EA2AECDB33005D3715 /* MicProgressBar.swift */,
 				BB0313CF2AEC9E34005D3715 /* Pokemon.swift */,
+				BB15A5AA2AEDBB35009182AC /* CameraData.swift */,
 				BB0313D72AECA374005D3715 /* PokemonPostView.swift */,
 				BB0313D92AECA393005D3715 /* SocialPageView.swift */,
 				BB0313D32AEC9EEC005D3715 /* PokedexView.swift */,
 				BB0313D52AEC9F0D005D3715 /* PokemonDetailView.swift */,
 				BB0313D12AEC9ECE005D3715 /* Data.swift */,
 				BB0313CD2AEC9AA7005D3715 /* CameraInterfaceView.swift */,
+				BB90977F2AEE5AD500817C37 /* loading.gif */,
 				BB0313F62AECF6FB005D3715 /* diceroll.gif */,
 				BB0313BE2AEC7DBC005D3715 /* Assets.xcassets */,
 				BB0313C02AEC7DBC005D3715 /* Preview Content */,
@@ -213,6 +234,8 @@
 			files = (
 				BB0313F72AECF6FB005D3715 /* diceroll.gif in Resources */,
 				BB0313C22AEC7DBC005D3715 /* Preview Assets.xcassets in Resources */,
+				BB9097802AEE5AD500817C37 /* loading.gif in Resources */,
+				BB15A5AF2AEDF36F009182AC /* Launch Screen.storyboard in Resources */,
 				BB0313BF2AEC7DBC005D3715 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,10 +279,15 @@
 				BB0313DA2AECA393005D3715 /* SocialPageView.swift in Sources */,
 				BB0313D82AECA374005D3715 /* PokemonPostView.swift in Sources */,
 				BB0313E72AECCED5005D3715 /* CameraViewController.swift in Sources */,
+				BB15A5AB2AEDBB35009182AC /* CameraData.swift in Sources */,
+				BB90977C2AEE2E3200817C37 /* LogInView.swift in Sources */,
 				BB0313D02AEC9E34005D3715 /* Pokemon.swift in Sources */,
 				BB0313D42AEC9EEC005D3715 /* PokedexView.swift in Sources */,
+				BB90977E2AEE2E4E00817C37 /* UserDataView.swift in Sources */,
+				BB90977A2AEE2E1D00817C37 /* SignUpView.swift in Sources */,
 				BB0313E42AECCED5005D3715 /* CameraActions.swift in Sources */,
 				BB0313E52AECCED5005D3715 /* CameraView.swift in Sources */,
+				BB9097782AEE2CF400817C37 /* ProfileView.swift in Sources */,
 				BB0313E92AECCEEC005D3715 /* UserEvents.swift in Sources */,
 				BB0313E62AECCED5005D3715 /* CameraViewControllerDelegate.swift in Sources */,
 				BB0313BD2AEC7DBA005D3715 /* ContentView.swift in Sources */,
@@ -325,6 +353,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -382,6 +411,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -405,10 +435,19 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorldDex/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = Camera;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to share where you captured an item.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audiovisual Recording";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Export AR Media";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Export AR Media";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to enable voice commands and text-to-speech functionality.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -437,10 +476,19 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorldDex/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = Camera;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to share where you captured an item.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audiovisual Recording";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Export AR Media";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Export AR Media";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to enable voice commands and text-to-speech functionality.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (

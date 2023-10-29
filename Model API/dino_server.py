@@ -60,7 +60,10 @@ def predict_api():
         # Get the image and the audio transcription from the request
         image_file = request.files['image']
         transcription = request.form['transcription']
+        print(f'transcription: {transcription}, dtype: {type(transcription)}')
         item_name = get_keyphrase_from_gpt(transcription)
+        if not item_name:
+            item_name = transcription
         print(f'=== searching for: {item_name} ===')
 
         image_source, image = load_image(image_file)

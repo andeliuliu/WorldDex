@@ -5,25 +5,23 @@
 //  Created by Anthony Qin on 10/27/23.
 //
 
-struct Pokemon: Identifiable {
-    let id: Int
-    let name: String
-    let location: String
-    let time: String
-    let image: String
-    let details: String // live observations
+import SwiftUI
+
+struct ImageResponse: Decodable {
+    let imagePaths: [Pokemon]
 }
 
-//struct PokemonDetails {
-//    let species: String
-//    let height: Double
-//    let weight: Double
-//    let abilities: [String]
-//    let baseStats: [Stat]
-//}
-
-//struct Stat {
-//    let name: String
-//    let value: Int
-//}
-
+struct Pokemon: Identifiable, Decodable {
+    let image_id: String // ITEM_ID
+    let user_id: String
+    let blockchain_url: String
+    let date_added: String // TIME
+    let location_taken: String
+    var cropped_image: String
+    var image: String
+    let details: String // live observations
+    let probability: String
+    
+    // Computed property for Identifiable conformance
+    var id: String { image_id }
+}

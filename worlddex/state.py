@@ -30,7 +30,7 @@ class ImageState(rx.State):
 
     def fetch_data(self):
         url = 'https://worlddex.ngrok.app/images'
-        params = {'user_id': self.username}
+        params = {'user_id': self.username} 
         print("fetching...")
 
         with httpx.Client() as client:  # using synchronous Client

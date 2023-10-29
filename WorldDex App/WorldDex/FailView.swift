@@ -22,30 +22,32 @@ struct FailView: View {
 
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
+            Color("theme1").edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 20) {
                 Text("Oh no! Your \(item) has escaped!")
-                    .font(.largeTitle)
+                    .font(Font.custom("Avenir", size: 28))
                     .foregroundColor(Color.black)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(nil)
                     .padding([.top, .leading, .trailing])
                 
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 500)
+                    .frame(height: 400)
                     .padding([.leading, .trailing])
                 
-                Text("You had a \(probability)% chance of capturing it!")
+                Text("You had a \(String(format: "%.1f", probability))% chance of capturing it!")
 
                 Button(action: {
                     self.callback?()
                 }) {
                     Image(systemName: "arrow.clockwise") // This is a restart icon in SF Symbols
                         .resizable()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 80, height: 80)
                         .padding()
-                        .background(Color.secondary.opacity(0.1))
+                        .background(Color("theme1").opacity(0.1))
                         .cornerRadius(40)
                 }
             }

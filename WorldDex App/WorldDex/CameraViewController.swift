@@ -77,6 +77,8 @@ public class CameraViewController: UIViewController, CLLocationManagerDelegate {
     /// Sets whether a double tap to switch cameras is supported
     public var doubleTapCameraSwitch = true
     
+    public var cameraData: CameraData?
+    
     /// Sets whether swipe vertically to zoom is supported
     public var swipeToZoom = true
     
@@ -610,11 +612,11 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
     // Maybe I will change it do willCapturePhotoFor
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
         DispatchQueue.main.async {
-            // Flash the screen to signal that SwiftUICam took a photo.
-            self.view.layer.opacity = 0
-            UIView.animate(withDuration: 0.5) {
-                self.view.layer.opacity = 1
-            }
+//            // Flash the screen to signal that SwiftUICam took a photo.
+//            self.view.layer.opacity = 0
+//            UIView.animate(withDuration: 0.5) {
+//                self.view.layer.opacity = 1
+//            }
             self.delegate?.didCapturePhoto()
         }
     }
@@ -665,25 +667,29 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             
             // For now, it is only right
             let image = UIImage(cgImage: cgImageRef!, scale: 1, orientation: .right)
-            // TODO: VIVEK SEND IMAGE TO SERVER
             
             let formattedTime = formattedTimestamp(date: Date())
             print("Timestamp: \(formattedTime)")
+            cameraData?.capturedImage = image
+            cameraData?.formattedTime = formattedTime
             
             if let currentLocation = currentLocation {
                 reverseGeocode(location: currentLocation) { locationString, error in
                     if let error = error {
                         print("Error reverse geocoding: \(error.localizedDescription)")
+                        self.cameraData?.locationString = "No location found"
                     } else if let locationString = locationString {
                         print("Location: \(locationString)")
+                        self.cameraData?.locationString = locationString
                     } else {
                         print("Could not retrieve location details.")
+                        self.cameraData?.locationString = "No location found"
                     }
                 }
             }
             //2 options to save
             //First is to use UIImageWriteToSavedPhotosAlbum
-            savePhoto(image)
+//            savePhoto(image)
             //Second is adapting Apple documentation with data of the modified image
             //savePhoto(image.jpegData(compressionQuality: 1)!)
             

@@ -12,6 +12,7 @@ import AVFoundation
 // MARK: CameraView
 public struct CameraView: UIViewControllerRepresentable {
     @ObservedObject var events: UserEvents
+    @ObservedObject var cameraData: CameraData
     //To enable call to updateUIView() on change of UserEvents() bc there is a bug
     class RandomClass { }
     let x = RandomClass()
@@ -26,8 +27,9 @@ public struct CameraView: UIViewControllerRepresentable {
     private var tapToFocus: Bool
     private var doubleTapCameraSwitch: Bool
     
-    public init(events: UserEvents, applicationName: String, preferredStartingCameraType: AVCaptureDevice.DeviceType = .builtInWideAngleCamera, preferredStartingCameraPosition: AVCaptureDevice.Position = .back, focusImage: String? = nil, pinchToZoom: Bool = true, tapToFocus: Bool = true, doubleTapCameraSwitch: Bool = true) {
+    public init(events: UserEvents, cameraData: CameraData, applicationName: String, preferredStartingCameraType: AVCaptureDevice.DeviceType = .builtInWideAngleCamera, preferredStartingCameraPosition: AVCaptureDevice.Position = .back, focusImage: String? = nil, pinchToZoom: Bool = true, tapToFocus: Bool = true, doubleTapCameraSwitch: Bool = true) {
         self.events = events
+        self.cameraData = cameraData
         
         self.applicationName = applicationName
         
@@ -53,6 +55,8 @@ public struct CameraView: UIViewControllerRepresentable {
         cameraViewController.pinchToZoom = pinchToZoom
         cameraViewController.tapToFocus = tapToFocus
         cameraViewController.doubleTapCameraSwitch = doubleTapCameraSwitch
+        
+        cameraViewController.cameraData = cameraData
         
         return cameraViewController
     }
