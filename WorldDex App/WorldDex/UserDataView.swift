@@ -70,6 +70,7 @@ struct UserDataView: View {
     
     func logOut() {
         UserDefaults.standard.set(false, forKey: "isLoggedIn")
+        UserDefaults.standard.set("", forKey: "username")
         isLoggedIn = false
     }
 }
