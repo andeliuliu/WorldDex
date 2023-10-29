@@ -219,7 +219,7 @@ struct PokemonDetailView: View {
     }
     
     func sendTranscriptionToServer(transcription: String) {
-        guard let url = URL(string: "http://18.236.216.2:5001/respond") else {
+        guard let url = URL(string: "http://54.69.7.221:5001/respond") else {
             print("Invalid URL")
             return
         }

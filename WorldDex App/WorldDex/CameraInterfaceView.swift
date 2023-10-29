@@ -29,7 +29,7 @@ func uploadImageWithTranscription(image: UIImage, transcription: String, complet
     }
     
     // Prepare the request
-    let url = URL(string: "http://18.236.216.2:5000/predict")!
+    let url = URL(string: "http://54.69.7.221:5000/predict")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     
